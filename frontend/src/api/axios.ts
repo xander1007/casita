@@ -2,8 +2,11 @@ import axios from "axios";
 
 const TOKEN_STORAGE_KEY = "casita_token";
 
+// URL del backend sin "/api"; en produccion se define en .env.production
+const API_URL = import.meta.env.VITE_API_URL ?? "http://localhost:8000";
+
 const api = axios.create({
-  baseURL: "http://localhost:8000/api",
+  baseURL: `${API_URL}/api`,
   headers: {
     "Content-Type": "application/json",
     Accept: "application/json",
