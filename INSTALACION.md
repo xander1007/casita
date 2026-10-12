@@ -43,8 +43,8 @@ solo tiene **Docker Desktop** instalado.
 ## ¿Qué hace el script automáticamente?
 
 1. Verifica que Docker y Docker Compose estén instalados y en ejecución.
-2. Crea el archivo `backend/.env` (si no existe) a partir de `backend/.env.example`.
-3. Ajusta las variables necesarias para que el backend se conecte a la base de datos dentro de Docker.
+2. Crea el archivo `.env` de la raíz (si no existe) a partir de `.env.example` y genera claves aleatorias para PostgreSQL y pgAdmin. Este archivo contiene las credenciales que usa `docker-compose.yml` y **no se sube al repositorio**.
+3. Crea el archivo `backend/.env` (si no existe) a partir de `backend/.env.example` y ajusta las variables necesarias para que el backend se conecte a la base de datos dentro de Docker.
 4. Construye e inicia los contenedores (`app`, `postgres`, `pgadmin`).
 5. Espera a que PostgreSQL esté disponible.
 6. Instala las dependencias PHP con Composer dentro del contenedor.
@@ -57,7 +57,7 @@ solo tiene **Docker Desktop** instalado.
 | Servicio          | URL                                              |
 |-------------------|---------------------------------------------------|
 | API Backend       | http://localhost:8000                              |
-| pgAdmin           | http://localhost:5050 (usuario: `admin@casita.pe`, clave: `root`) |
+| pgAdmin           | http://localhost:5050 (usuario y clave: `PGADMIN_EMAIL` / `PGADMIN_PASSWORD` en `.env`) |
 | Frontend (dev)    | http://localhost:5173 (ver paso siguiente)         |
 
 ### Levantar el frontend en modo desarrollo

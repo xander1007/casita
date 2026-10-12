@@ -110,6 +110,23 @@ function Set-EnvValue {
     Set-Content -Path $EnvPath -Value $content -NoNewline
 }
 
+function Get-EnvValue {
+    param(
+        [Parameter(Mandatory = $true)][string]$EnvPath,
+        [Parameter(Mandatory = $true)][string]$Key
+    )
+    $match = Select-String -Path $EnvPath -Pattern "^\s*$([regex]::Escape($Key))\s*=(.*)$" | Select-Object -First 1
+    if ($match) { return $match.Matches[0].Groups[1].Value.Trim() }
+    return ""
+}
+
+function New-RandomPassword {
+    $chars = [char[]]"abcdefghijkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789"
+    $bytes = New-Object byte[] 24
+    [System.Security.Cryptography.RandomNumberGenerator]::Create().GetBytes($bytes)
+    return -join ($bytes | ForEach-Object { $chars[$_ % $chars.Length] })
+}
+
 Write-Host "======================================================" -ForegroundColor Magenta
 Write-Host "   Instalador automatico de SistemaCasita" -ForegroundColor Magenta
 Write-Host "======================================================" -ForegroundColor Magenta
@@ -139,7 +156,39 @@ if ($composeVersion.ExitCode -ne 0) {
 }
 Write-Ok "Docker Compose disponible."
 
-# 2. Preparar archivo .env del backend
+# 2a. Preparar archivo .env de la raiz (credenciales de docker-compose.yml)
+Write-Step "Configurando credenciales de Docker Compose"
+$rootEnvExample = Join-Path $RootDir ".env.example"
+$rootEnvFile = Join-Path $RootDir ".env"
+
+if (-not (Test-Path $rootEnvFile)) {
+    if (-not (Test-Path $rootEnvExample)) {
+        Write-ErrorMsg "No se encontro .env.example en la raiz del proyecto."
+        exit 1
+    }
+    Copy-Item -Path $rootEnvExample -Destination $rootEnvFile
+    Write-Ok "Se creo .env a partir de .env.example."
+}
+else {
+    Write-Ok ".env ya existe, se mantienen sus credenciales."
+}
+
+# Reemplazamos las claves de ejemplo por claves aleatorias
+foreach ($key in @("DB_PASSWORD", "PGADMIN_PASSWORD")) {
+    $current = Get-EnvValue -EnvPath $rootEnvFile -Key $key
+    if (-not $current -or $current -eq "cambia_esta_clave") {
+        Set-EnvValue -EnvPath $rootEnvFile -Key $key -Value (New-RandomPassword)
+        Write-Ok "Se genero una clave aleatoria para $key."
+    }
+}
+
+$dbDatabase = Get-EnvValue -EnvPath $rootEnvFile -Key "DB_DATABASE"
+$dbUsername = Get-EnvValue -EnvPath $rootEnvFile -Key "DB_USERNAME"
+$dbPassword = Get-EnvValue -EnvPath $rootEnvFile -Key "DB_PASSWORD"
+$pgadminEmail = Get-EnvValue -EnvPath $rootEnvFile -Key "PGADMIN_EMAIL"
+$pgadminPassword = Get-EnvValue -EnvPath $rootEnvFile -Key "PGADMIN_PASSWORD"
+
+# 2b. Preparar archivo .env del backend
 Write-Step "Configurando variables de entorno del backend"
 $envExample = Join-Path $BackendDir ".env.example"
 $envFile = Join-Path $BackendDir ".env"
@@ -161,9 +210,9 @@ Set-EnvValue -EnvPath $envFile -Key "APP_URL" -Value "http://localhost:8000"
 Set-EnvValue -EnvPath $envFile -Key "DB_CONNECTION" -Value "pgsql"
 Set-EnvValue -EnvPath $envFile -Key "DB_HOST" -Value "postgres"
 Set-EnvValue -EnvPath $envFile -Key "DB_PORT" -Value "5432"
-Set-EnvValue -EnvPath $envFile -Key "DB_DATABASE" -Value "casita_erp"
-Set-EnvValue -EnvPath $envFile -Key "DB_USERNAME" -Value "root"
-Set-EnvValue -EnvPath $envFile -Key "DB_PASSWORD" -Value "secretpassword"
+Set-EnvValue -EnvPath $envFile -Key "DB_DATABASE" -Value $dbDatabase
+Set-EnvValue -EnvPath $envFile -Key "DB_USERNAME" -Value $dbUsername
+Set-EnvValue -EnvPath $envFile -Key "DB_PASSWORD" -Value $dbPassword
 Set-EnvValue -EnvPath $envFile -Key "CORS_ALLOWED_ORIGINS" -Value "http://localhost:5173"
 Write-Ok "Variables de entorno de Docker aseguradas en backend\.env."
 
@@ -274,7 +323,7 @@ Write-Host "   SistemaCasita esta listo para usarse" -ForegroundColor Green
 Write-Host "======================================================" -ForegroundColor Green
 Write-Host ""
 Write-Host "  API Backend:     http://localhost:8000" -ForegroundColor White
-Write-Host "  pgAdmin:         http://localhost:5050  (admin@casita.pe / root)" -ForegroundColor White
+Write-Host "  pgAdmin:         http://localhost:5050  ($pgadminEmail / clave PGADMIN_PASSWORD en .env)" -ForegroundColor White
 Write-Host "  Frontend (dev):  http://localhost:5173   (ejecuta 'cd frontend; npm run dev')" -ForegroundColor White
 Write-Host ""
 Write-Host "Para detener el sistema ejecuta: docker compose down" -ForegroundColor DarkGray

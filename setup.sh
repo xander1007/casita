@@ -41,6 +41,15 @@ set_env_value() {
     fi
 }
 
+get_env_value() {
+    # get_env_value <archivo> <clave>
+    grep -E "^\s*$2\s*=" "$1" | head -n 1 | cut -d '=' -f 2- | tr -d '\r' | xargs
+}
+
+random_password() {
+    LC_ALL=C tr -dc 'abcdefghijkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789' < /dev/urandom | head -c 24
+}
+
 echo -e "${COLOR_MAGENTA}======================================================${COLOR_RESET}"
 echo -e "${COLOR_MAGENTA}   Instalador automatico de SistemaCasita${COLOR_RESET}"
 echo -e "${COLOR_MAGENTA}======================================================${COLOR_RESET}"
@@ -64,7 +73,34 @@ if ! docker compose version >/dev/null 2>&1; then
 fi
 ok "Docker Compose disponible."
 
-# 2. Preparar archivo .env del backend
+# 2a. Preparar archivo .env de la raiz (credenciales de docker-compose.yml)
+step "Configurando credenciales de Docker Compose"
+ROOT_ENV_EXAMPLE="$ROOT_DIR/.env.example"
+ROOT_ENV_FILE="$ROOT_DIR/.env"
+
+if [ ! -f "$ROOT_ENV_FILE" ]; then
+    [ -f "$ROOT_ENV_EXAMPLE" ] || fail "No se encontro .env.example en la raiz del proyecto."
+    cp "$ROOT_ENV_EXAMPLE" "$ROOT_ENV_FILE"
+    ok "Se creo .env a partir de .env.example."
+else
+    ok ".env ya existe, se mantienen sus credenciales."
+fi
+
+# Reemplazamos las claves de ejemplo por claves aleatorias
+for key in DB_PASSWORD PGADMIN_PASSWORD; do
+    current="$(get_env_value "$ROOT_ENV_FILE" "$key")"
+    if [ -z "$current" ] || [ "$current" = "cambia_esta_clave" ]; then
+        set_env_value "$ROOT_ENV_FILE" "$key" "$(random_password)"
+        ok "Se genero una clave aleatoria para $key."
+    fi
+done
+
+DB_DATABASE="$(get_env_value "$ROOT_ENV_FILE" DB_DATABASE)"
+DB_USERNAME="$(get_env_value "$ROOT_ENV_FILE" DB_USERNAME)"
+DB_PASSWORD="$(get_env_value "$ROOT_ENV_FILE" DB_PASSWORD)"
+PGADMIN_EMAIL="$(get_env_value "$ROOT_ENV_FILE" PGADMIN_EMAIL)"
+
+# 2b. Preparar archivo .env del backend
 step "Configurando variables de entorno del backend"
 ENV_EXAMPLE="$BACKEND_DIR/.env.example"
 ENV_FILE="$BACKEND_DIR/.env"
@@ -81,9 +117,9 @@ set_env_value "$ENV_FILE" "APP_URL" "http://localhost:8000"
 set_env_value "$ENV_FILE" "DB_CONNECTION" "pgsql"
 set_env_value "$ENV_FILE" "DB_HOST" "postgres"
 set_env_value "$ENV_FILE" "DB_PORT" "5432"
-set_env_value "$ENV_FILE" "DB_DATABASE" "casita_erp"
-set_env_value "$ENV_FILE" "DB_USERNAME" "root"
-set_env_value "$ENV_FILE" "DB_PASSWORD" "secretpassword"
+set_env_value "$ENV_FILE" "DB_DATABASE" "$DB_DATABASE"
+set_env_value "$ENV_FILE" "DB_USERNAME" "$DB_USERNAME"
+set_env_value "$ENV_FILE" "DB_PASSWORD" "$DB_PASSWORD"
 set_env_value "$ENV_FILE" "CORS_ALLOWED_ORIGINS" "http://localhost:5173"
 ok "Variables de entorno de Docker aseguradas en backend/.env."
 
@@ -97,7 +133,7 @@ step "Esperando a que PostgreSQL este listo para aceptar conexiones"
 MAX_RETRIES=30
 READY=0
 for i in $(seq 1 "$MAX_RETRIES"); do
-    if (cd "$ROOT_DIR" && docker compose exec -T postgres pg_isready -U root) >/dev/null 2>&1; then
+    if (cd "$ROOT_DIR" && docker compose exec -T postgres pg_isready -U "$DB_USERNAME") >/dev/null 2>&1; then
         READY=1
         break
     fi
@@ -161,7 +197,7 @@ echo -e "${COLOR_GREEN}   SistemaCasita esta listo para usarse${COLOR_RESET}"
 echo -e "${COLOR_GREEN}======================================================${COLOR_RESET}"
 echo ""
 echo "  API Backend:     http://localhost:8000"
-echo "  pgAdmin:         http://localhost:5050  (admin@casita.pe / root)"
+echo "  pgAdmin:         http://localhost:5050  ($PGADMIN_EMAIL / clave PGADMIN_PASSWORD en .env)"
 echo "  Frontend (dev):  http://localhost:5173   (ejecuta 'cd frontend && npm run dev')"
 echo ""
 echo -e "${COLOR_GRAY}Para detener el sistema ejecuta: docker compose down${COLOR_RESET}"
