@@ -120,7 +120,7 @@ set_env_value "$ENV_FILE" "DB_PORT" "5432"
 set_env_value "$ENV_FILE" "DB_DATABASE" "$DB_DATABASE"
 set_env_value "$ENV_FILE" "DB_USERNAME" "$DB_USERNAME"
 set_env_value "$ENV_FILE" "DB_PASSWORD" "$DB_PASSWORD"
-set_env_value "$ENV_FILE" "CORS_ALLOWED_ORIGINS" "http://localhost:5173"
+set_env_value "$ENV_FILE" "CORS_ALLOWED_ORIGINS" "http://localhost:5173,http://3.14.141.19"
 ok "Variables de entorno de Docker aseguradas en backend/.env."
 
 # 3. Levantar contenedores

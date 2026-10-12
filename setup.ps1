@@ -213,7 +213,7 @@ Set-EnvValue -EnvPath $envFile -Key "DB_PORT" -Value "5432"
 Set-EnvValue -EnvPath $envFile -Key "DB_DATABASE" -Value $dbDatabase
 Set-EnvValue -EnvPath $envFile -Key "DB_USERNAME" -Value $dbUsername
 Set-EnvValue -EnvPath $envFile -Key "DB_PASSWORD" -Value $dbPassword
-Set-EnvValue -EnvPath $envFile -Key "CORS_ALLOWED_ORIGINS" -Value "http://localhost:5173"
+Set-EnvValue -EnvPath $envFile -Key "CORS_ALLOWED_ORIGINS" -Value "http://localhost:5173,http://3.14.141.19"
 Write-Ok "Variables de entorno de Docker aseguradas en backend\.env."
 
 # 3. Levantar contenedores
