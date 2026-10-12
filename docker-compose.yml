@@ -1,0 +1,51 @@
+name: sistemacasita
+
+services:
+  # Servicio de Backend (PHP 8.3 + Laravel)
+  app:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: casita_app
+    restart: always
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend:/app
+    environment:
+      - DB_CONNECTION=pgsql
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_DATABASE=casita_erp
+      - DB_USERNAME=root
+      - DB_PASSWORD=secretpassword
+    depends_on:
+      - postgres
+
+  # Base de Datos PostgreSQL 16
+  postgres:
+    image: postgres:16-alpine
+    container_name: casita_postgres
+    restart: always
+    environment:
+      POSTGRES_DB: casita_erp
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: secretpassword
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  # Gestor Web de Base de Datos
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: casita_pgadmin
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@casita.pe
+      PGADMIN_DEFAULT_PASSWORD: root
+    ports:
+      - "5050:80"
+
+volumes:
+  postgres_data:
