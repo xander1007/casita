@@ -84,6 +84,11 @@ export function PurchaseDetailModal({ purchase, onClose, onAnnulled }: PurchaseD
                     S/N: {detail.serials.map((s) => s.serial_number).join(", ")}
                   </span>
                 )}
+                {detail.allocations?.map((a) => (
+                  <span key={a.sales_order_id} className="block text-xs text-amber-700">
+                    Para pedido {a.order_code}: {a.quantity} und.
+                  </span>
+                ))}
               </td>
               <td className="py-2 text-right">{detail.quantity}</td>
               <td className="py-2 text-right">S/ {detail.unit_cost.toFixed(2)}</td>

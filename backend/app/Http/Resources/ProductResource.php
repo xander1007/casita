@@ -13,6 +13,7 @@ class ProductResource extends JsonResource
     public function toArray(Request $request): array
     {
         $totalStock = (int) ($this->total_stock ?? 0);
+        $reservedStock = (int) ($this->reserved_stock ?? 0);
 
         return [
             'id' => $this->id,
@@ -31,6 +32,9 @@ class ProductResource extends JsonResource
             'category' => $this->whenLoaded('category', fn () => $this->category ? new CategoryResource($this->category) : null),
             'brand' => $this->whenLoaded('brand', fn () => $this->brand ? new BrandResource($this->brand) : null),
             'total_stock' => $totalStock,
+            // Units committed to sales orders; only loaded by queries that sum it.
+            'reserved_stock' => $reservedStock,
+            'available_stock' => max(0, $totalStock - $reservedStock),
             'is_low_stock' => ! $this->is_service && $totalStock <= $this->min_stock,
             'serials_count' => $this->when(isset($this->serials_count), fn () => (int) $this->serials_count),
         ];

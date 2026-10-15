@@ -202,6 +202,9 @@ export default function ProductsPage() {
                         {product.total_stock} und.
                       </span>
                     )}
+                    {product.reserved_stock > 0 && (
+                      <div className="mt-1 text-xs text-amber-600">{product.reserved_stock} reservada(s) en pedidos</div>
+                    )}
                   </td>
                   <td className="px-4 py-3">
                     <div className="flex gap-3 text-xs font-medium">

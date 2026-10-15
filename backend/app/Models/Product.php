@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\CaseSensitiveSearch;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -9,7 +11,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Product extends Model
 {
-    use HasFactory;
+    use CaseSensitiveSearch, HasFactory;
 
     /**
      * A short, common subset of SUNAT Catalog No. 03 (unidades de medida).
@@ -73,5 +75,18 @@ class Product extends Model
     public function stockMovements(): HasMany
     {
         return $this->hasMany(StockMovement::class);
+    }
+
+    /**
+     * Adds total_stock and reserved_stock (units held by sales orders), for one
+     * warehouse or across all of them. ProductResource derives available_stock.
+     */
+    public function scopeWithStock(Builder $query, ?int $warehouseId = null): Builder
+    {
+        $inWarehouse = fn ($stocks) => $stocks->when($warehouseId, fn ($s) => $s->where('warehouse_id', $warehouseId));
+
+        return $query
+            ->withSum(['warehouseStocks as total_stock' => $inWarehouse], 'quantity')
+            ->withSum(['warehouseStocks as reserved_stock' => $inWarehouse], 'reserved_quantity');
     }
 }

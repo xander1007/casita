@@ -17,6 +17,7 @@ use App\Models\PurchaseDetail;
 use App\Models\StockMovement;
 use App\Models\Warehouse;
 use App\Models\WarehouseStock;
+use App\Services\Sales\SalesOrderService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
@@ -27,7 +28,9 @@ class PurchaseController extends Controller
 {
     private const DEFAULT_DETAILS = ['supplier', 'warehouse', 'user'];
 
-    private const FULL_DETAILS = ['details.product', 'details.serials', 'supplier', 'warehouse', 'user', 'annulledBy'];
+    private const FULL_DETAILS = ['details.product', 'details.serials', 'details.allocations.salesOrderItem.order', 'supplier', 'warehouse', 'user', 'annulledBy'];
+
+    public function __construct(private readonly SalesOrderService $salesOrders) {}
 
     /**
      * List the purchase history with search and filters.
@@ -99,6 +102,20 @@ class PurchaseController extends Controller
                 ]);
             }
 
+            $allocations = $item['allocations'] ?? [];
+
+            if (collect($allocations)->sum('quantity') > $item['quantity']) {
+                throw ValidationException::withMessages([
+                    'items' => "Se asignaron a pedidos más unidades de \"{$product->name}\" que las compradas.",
+                ]);
+            }
+
+            if ($allocations !== [] && $product->is_service) {
+                throw ValidationException::withMessages([
+                    'items' => "\"{$product->name}\" es un servicio y no se puede asignar a pedidos.",
+                ]);
+            }
+
             $lineSubtotal = round($item['quantity'] * $item['unit_cost'], 2);
             $subtotal += $lineSubtotal;
 
@@ -108,6 +125,7 @@ class PurchaseController extends Controller
                 'unit_cost' => $item['unit_cost'],
                 'subtotal' => $lineSubtotal,
                 'serial_numbers' => $serialNumbers,
+                'allocations' => $allocations,
             ];
         }
 
@@ -170,6 +188,11 @@ class PurchaseController extends Controller
                         'status' => 'available',
                     ]);
                 }
+
+                // Units bought "a demanda" are reserved for their customer as soon as they arrive.
+                if ($line['allocations'] !== []) {
+                    $this->salesOrders->allocateFromPurchase($detail, (int) $data['warehouse_id'], $line['allocations']);
+                }
             }
 
             return $purchase;
@@ -212,15 +235,18 @@ class PurchaseController extends Controller
                     }
                 }
 
+                // Units bought for sales orders go back to "pending" before the stock check.
+                $this->salesOrders->revertPurchaseAllocations($detail, $purchase->warehouse_id);
+
                 $stock = WarehouseStock::query()
                     ->where('product_id', $product->id)
                     ->where('warehouse_id', $purchase->warehouse_id)
                     ->lockForUpdate()
                     ->first();
 
-                if (! $stock || $stock->quantity < $detail->quantity) {
+                if (! $stock || $stock->available() < $detail->quantity) {
                     throw ValidationException::withMessages([
-                        'purchase' => "No se puede anular: el stock actual de \"{$product->name}\" es insuficiente para revertir la compra.",
+                        'purchase' => "No se puede anular: el stock disponible de \"{$product->name}\" (sin contar lo reservado para pedidos) es insuficiente para revertir la compra.",
                     ]);
                 }
 
@@ -289,9 +315,9 @@ class PurchaseController extends Controller
 
         if ($search = $request->string('search')->trim()->toString()) {
             $query->where(function ($q) use ($search) {
-                $q->where('name', 'like', "%{$search}%")
-                    ->orWhere('internal_code', 'like', "%{$search}%")
-                    ->orWhere('barcode', 'like', "%{$search}%");
+                $q->whereContainsExact('name', $search)
+                    ->orWhereContainsExact('internal_code', $search)
+                    ->orWhereContainsExact('barcode', $search);
             });
         }
 

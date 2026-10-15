@@ -18,11 +18,21 @@ interface PaymentRow {
 interface CheckoutModalProps {
   items: CartItem[];
   initialContact?: Contact | null;
+  /** Source document being invoiced; a sales order fixes the customer. */
+  quotationId?: number | null;
+  salesOrderId?: number | null;
   onClose: () => void;
   onSuccess: (sale: Sale, change: number) => void;
 }
 
-export function CheckoutModal({ items, initialContact = null, onClose, onSuccess }: CheckoutModalProps) {
+export function CheckoutModal({
+  items,
+  initialContact = null,
+  quotationId = null,
+  salesOrderId = null,
+  onClose,
+  onSuccess,
+}: CheckoutModalProps) {
   const totals = useMemo(() => calcCartTotals(items), [items]);
 
   const [contact, setContact] = useState<Contact | null>(initialContact);
@@ -90,6 +100,8 @@ export function CheckoutModal({ items, initialContact = null, onClose, onSuccess
       const { sale, change } = await createSale({
         contact_id: contact?.id ?? null,
         document_type: documentType,
+        quotation_id: quotationId,
+        sales_order_id: salesOrderId,
         items: items.map((item) => ({
           product_id: item.product.id,
           product_serial_id: item.serial?.id ?? null,
@@ -131,13 +143,17 @@ export function CheckoutModal({ items, initialContact = null, onClose, onSuccess
                 {contact.name_or_business_name}{" "}
                 <span className="text-xs text-slate-400">({contact.document_number})</span>
               </span>
-              <button
-                type="button"
-                onClick={() => setContact(null)}
-                className="text-xs text-indigo-600 hover:underline"
-              >
-                Cambiar
-              </button>
+              {salesOrderId ? (
+                <span className="text-xs text-slate-400">Cliente del pedido</span>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => setContact(null)}
+                  className="text-xs text-indigo-600 hover:underline"
+                >
+                  Cambiar
+                </button>
+              )}
             </div>
           ) : (
             <div>

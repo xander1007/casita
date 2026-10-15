@@ -73,6 +73,8 @@ export interface PurchaseItemPayload {
   quantity: number;
   unit_cost: number;
   serial_numbers?: string[];
+  /** Back-to-back: sales order lines these units are bought for. */
+  allocations?: { sales_order_item_id: number; quantity: number }[];
 }
 
 export interface StorePurchasePayload {

@@ -98,7 +98,7 @@ export function ServicePartsSection({ service, canManage, onChanged }: ServicePa
                     >
                       {product.name}{" "}
                       <span className="text-xs text-slate-400">
-                        (S/ {product.sale_price.toFixed(2)} · stock {product.total_stock})
+                        (S/ {product.sale_price.toFixed(2)} · stock {product.available_stock})
                       </span>
                     </button>
                   ))}

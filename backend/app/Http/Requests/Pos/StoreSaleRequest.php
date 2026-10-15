@@ -24,6 +24,10 @@ class StoreSaleRequest extends FormRequest
             'contact_id' => ['nullable', 'exists:contacts,id'],
             'document_type' => ['required', Rule::in(Sale::DOCUMENT_TYPES)],
 
+            // Optional source document the sale is invoicing.
+            'quotation_id' => ['nullable', 'exists:quotations,id', 'prohibits:sales_order_id'],
+            'sales_order_id' => ['nullable', 'exists:sales_orders,id'],
+
             'items' => ['required', 'array', 'min:1'],
             'items.*.product_id' => ['required', 'exists:products,id'],
             'items.*.product_serial_id' => ['nullable', 'exists:product_serials,id'],

@@ -22,6 +22,13 @@ import SalesHistoryPage from "./pages/sales/SalesHistoryPage";
 import DespatchesListPage from "./pages/despatches/DespatchesListPage";
 import PurchaseListPage from "./pages/purchases/PurchaseListPage";
 import PurchaseFormPage from "./pages/purchases/PurchaseFormPage";
+import QuotationListPage from "./pages/quotations/QuotationListPage";
+import QuotationFormPage from "./pages/quotations/QuotationFormPage";
+import SalesOrderListPage from "./pages/salesOrders/SalesOrderListPage";
+import SalesOrderFormPage from "./pages/salesOrders/SalesOrderFormPage";
+import GovernmentOrderListPage from "./pages/governmentOrders/GovernmentOrderListPage";
+import GovernmentOrderFormPage from "./pages/governmentOrders/GovernmentOrderFormPage";
+import SettlementsPage from "./pages/settlements/SettlementsPage";
 import ServicesListPage from "./pages/services/ServicesListPage";
 import ReportsPage from "./pages/reports/ReportsPage";
 import SunatReportsPage from "./pages/reports/SunatReportsPage";
@@ -141,6 +148,51 @@ function App() {
           />
 
           <Route
+            path="/quotations"
+            element={
+              <RequirePermission anyOf={["quotations.view"]}>
+                <QuotationListPage />
+              </RequirePermission>
+            }
+          />
+
+          <Route
+            path="/quotations/nueva"
+            element={
+              <RequirePermission anyOf={["quotations.manage"]}>
+                <QuotationFormPage />
+              </RequirePermission>
+            }
+          />
+
+          <Route
+            path="/quotations/:id/editar"
+            element={
+              <RequirePermission anyOf={["quotations.manage"]}>
+                <QuotationFormPage />
+              </RequirePermission>
+            }
+          />
+
+          <Route
+            path="/sales-orders"
+            element={
+              <RequirePermission anyOf={["sales-orders.view"]}>
+                <SalesOrderListPage />
+              </RequirePermission>
+            }
+          />
+
+          <Route
+            path="/sales-orders/nuevo"
+            element={
+              <RequirePermission anyOf={["sales-orders.manage"]}>
+                <SalesOrderFormPage />
+              </RequirePermission>
+            }
+          />
+
+          <Route
             path="/despatches"
             element={
               <RequirePermission anyOf={["despatches.view"]}>
@@ -163,6 +215,33 @@ function App() {
             element={
               <RequirePermission anyOf={["purchases.create"]}>
                 <PurchaseFormPage />
+              </RequirePermission>
+            }
+          />
+
+          <Route
+            path="/government-orders"
+            element={
+              <RequirePermission anyOf={["government-orders.view"]}>
+                <GovernmentOrderListPage />
+              </RequirePermission>
+            }
+          />
+
+          <Route
+            path="/government-orders/nueva"
+            element={
+              <RequirePermission anyOf={["government-orders.manage"]}>
+                <GovernmentOrderFormPage />
+              </RequirePermission>
+            }
+          />
+
+          <Route
+            path="/settlements"
+            element={
+              <RequirePermission anyOf={["settlements.view"]}>
+                <SettlementsPage />
               </RequirePermission>
             }
           />

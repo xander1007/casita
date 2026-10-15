@@ -41,6 +41,10 @@ export function AppLayout() {
   const canSeeSales = hasAnyPermission(["sales.view"]);
   const canSeeDespatches = hasAnyPermission(["despatches.view"]);
   const canSeePurchases = hasAnyPermission(["purchases.view"]);
+  const canSeeQuotations = hasAnyPermission(["quotations.view"]);
+  const canSeeSalesOrders = hasAnyPermission(["sales-orders.view"]);
+  const canSeeGovernmentOrders = hasAnyPermission(["government-orders.view"]);
+  const canSeeSettlements = hasAnyPermission(["settlements.view"]);
   const canSeeServices = hasAnyPermission(["services.view"]);
   const canSeeReports = hasAnyPermission(["reports.view"]);
   const canSeeCashStatus = hasAnyPermission(["cash.open-close", "pos.access"]);
@@ -100,6 +104,22 @@ export function AppLayout() {
                   Ventas
                 </NavLink>
               )}
+              {canSeeQuotations && (
+                <NavLink
+                  to="/quotations"
+                  className={({ isActive }) => (isActive ? "text-indigo-600" : "hover:text-slate-800")}
+                >
+                  Cotizaciones
+                </NavLink>
+              )}
+              {canSeeSalesOrders && (
+                <NavLink
+                  to="/sales-orders"
+                  className={({ isActive }) => (isActive ? "text-indigo-600" : "hover:text-slate-800")}
+                >
+                  Pedidos
+                </NavLink>
+              )}
               {canSeeServices && (
                 <NavLink
                   to="/services"
@@ -122,6 +142,22 @@ export function AppLayout() {
                   className={({ isActive }) => (isActive ? "text-indigo-600" : "hover:text-slate-800")}
                 >
                   Compras
+                </NavLink>
+              )}
+              {canSeeGovernmentOrders && (
+                <NavLink
+                  to="/government-orders"
+                  className={({ isActive }) => (isActive ? "text-indigo-600" : "hover:text-slate-800")}
+                >
+                  OC del Estado
+                </NavLink>
+              )}
+              {canSeeSettlements && (
+                <NavLink
+                  to="/settlements"
+                  className={({ isActive }) => (isActive ? "text-indigo-600" : "hover:text-slate-800")}
+                >
+                  Cancelaciones
                 </NavLink>
               )}
               {canSeeInventory && (

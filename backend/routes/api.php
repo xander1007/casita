@@ -9,16 +9,21 @@ use App\Http\Controllers\Api\Cash\CashShiftController;
 use App\Http\Controllers\Api\Cash\DocumentSeriesController;
 use App\Http\Controllers\Api\ContactController;
 use App\Http\Controllers\Api\Despatches\DespatchController;
+use App\Http\Controllers\Api\GovernmentOrders\GovernmentOrderController;
 use App\Http\Controllers\Api\Inventory\BrandController;
 use App\Http\Controllers\Api\Inventory\CategoryController;
 use App\Http\Controllers\Api\Inventory\ProductController;
 use App\Http\Controllers\Api\Inventory\WarehouseController;
 use App\Http\Controllers\Api\Pos\POSController;
 use App\Http\Controllers\Api\Purchases\PurchaseController;
+use App\Http\Controllers\Api\Quotations\QuotationController;
 use App\Http\Controllers\Api\Reports\ReportController;
 use App\Http\Controllers\Api\Reports\SunatReportController;
 use App\Http\Controllers\Api\Sales\SaleController;
+use App\Http\Controllers\Api\SalesOrders\SalesLookupController;
+use App\Http\Controllers\Api\SalesOrders\SalesOrderController;
 use App\Http\Controllers\Api\Services\TechnicalServiceController;
+use App\Http\Controllers\Api\Settlements\PaymentSettlementController;
 use App\Http\Controllers\Api\SettingsController;
 use Illuminate\Support\Facades\Route;
 
@@ -135,6 +140,8 @@ Route::middleware(['auth:sanctum', 'active', 'permission:pos.access'])->prefix('
     Route::get('/contacts', [ContactController::class, 'index']);
     Route::post('/contacts', [ContactController::class, 'store']);
     Route::post('/sales', [POSController::class, 'store']);
+    Route::get('/quotations/{quotation}', [QuotationController::class, 'posPayload']);
+    Route::get('/sales-orders/{order}', [SalesOrderController::class, 'posPayload']);
     Route::get('/sales/{sale}/print', [POSController::class, 'print']);
 });
 
@@ -164,6 +171,7 @@ Route::middleware(['auth:sanctum', 'active'])->prefix('purchases')->group(functi
         Route::get('/lookups/suppliers', [PurchaseController::class, 'suppliers']);
         Route::post('/lookups/suppliers', [ContactController::class, 'store']);
         Route::get('/lookups/products', [PurchaseController::class, 'products']);
+        Route::get('/lookups/on-demand', [SalesOrderController::class, 'purchaseSuggestions']);
         Route::post('/', [PurchaseController::class, 'store']);
     });
 
@@ -173,6 +181,76 @@ Route::middleware(['auth:sanctum', 'active'])->prefix('purchases')->group(functi
     });
 
     Route::middleware('permission:purchases.annul')->post('/{purchase}/annul', [PurchaseController::class, 'annul']);
+});
+
+Route::middleware(['auth:sanctum', 'active', 'permission:quotations.manage|sales-orders.manage'])
+    ->prefix('sales-lookups')
+    ->group(function () {
+        Route::get('/warehouses', [SalesLookupController::class, 'warehouses']);
+        Route::get('/customers', [SalesLookupController::class, 'customers']);
+        Route::get('/products', [SalesLookupController::class, 'products']);
+    });
+
+Route::middleware(['auth:sanctum', 'active'])->prefix('quotations')->group(function () {
+    Route::middleware('permission:quotations.manage')->group(function () {
+        Route::post('/', [QuotationController::class, 'store']);
+        Route::put('/{quotation}', [QuotationController::class, 'update']);
+        Route::post('/{quotation}/approve', [QuotationController::class, 'approve']);
+        Route::post('/{quotation}/reject', [QuotationController::class, 'reject']);
+    });
+
+    Route::middleware('permission:sales-orders.manage')
+        ->post('/{quotation}/convert-to-order', [QuotationController::class, 'convertToOrder']);
+
+    Route::middleware('permission:quotations.view')->group(function () {
+        Route::get('/', [QuotationController::class, 'index']);
+        Route::get('/{quotation}', [QuotationController::class, 'show']);
+        Route::get('/{quotation}/print', [QuotationController::class, 'print']);
+    });
+});
+
+Route::middleware(['auth:sanctum', 'active'])->prefix('sales-orders')->group(function () {
+    Route::middleware('permission:sales-orders.view')->group(function () {
+        Route::get('/', [SalesOrderController::class, 'index']);
+        Route::get('/purchase-suggestions', [SalesOrderController::class, 'purchaseSuggestions']);
+        Route::get('/{order}', [SalesOrderController::class, 'show']);
+    });
+
+    Route::middleware('permission:sales-orders.manage')->group(function () {
+        Route::post('/', [SalesOrderController::class, 'store']);
+        Route::post('/{order}/cancel', [SalesOrderController::class, 'cancel']);
+    });
+});
+
+Route::middleware(['auth:sanctum', 'active'])->prefix('government-orders')->group(function () {
+    Route::middleware('permission:government-orders.manage')->group(function () {
+        Route::get('/lookups/warehouses', [GovernmentOrderController::class, 'warehouses']);
+        Route::get('/lookups/entities', [GovernmentOrderController::class, 'entities']);
+        Route::get('/lookups/products', [GovernmentOrderController::class, 'products']);
+        Route::post('/', [GovernmentOrderController::class, 'store']);
+        Route::post('/{order}/deliver', [GovernmentOrderController::class, 'markDelivered']);
+        Route::post('/{order}/annul', [GovernmentOrderController::class, 'annul']);
+    });
+
+    Route::middleware('permission:government-orders.view')->group(function () {
+        Route::get('/', [GovernmentOrderController::class, 'index']);
+        Route::get('/{order}', [GovernmentOrderController::class, 'show']);
+        Route::get('/{order}/stock-report', [GovernmentOrderController::class, 'stockReport']);
+    });
+});
+
+Route::middleware(['auth:sanctum', 'active'])->prefix('settlements')->group(function () {
+    Route::middleware('permission:settlements.create')->group(function () {
+        Route::get('/lookups/contacts', [PaymentSettlementController::class, 'contacts']);
+        Route::post('/', [PaymentSettlementController::class, 'store']);
+    });
+
+    Route::middleware('permission:settlements.view')->group(function () {
+        Route::get('/', [PaymentSettlementController::class, 'index']);
+        Route::get('/{settlement}', [PaymentSettlementController::class, 'show']);
+    });
+
+    Route::middleware('permission:settlements.annul')->post('/{settlement}/annul', [PaymentSettlementController::class, 'annul']);
 });
 
 Route::middleware(['auth:sanctum', 'active'])->prefix('reports')->group(function () {

@@ -75,7 +75,7 @@ export function CatalogPanel({ warehouseId, onSelectProduct, refreshIndex }: Cat
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
           {!isLoading &&
             products.map((product) => {
-              const outOfStock = !product.is_service && product.total_stock <= 0;
+              const outOfStock = !product.is_service && product.available_stock <= 0;
 
               return (
                 <button
@@ -103,7 +103,7 @@ export function CatalogPanel({ warehouseId, onSelectProduct, refreshIndex }: Cat
                             outOfStock ? "bg-red-100 text-red-700" : "bg-emerald-100 text-emerald-700"
                           }`}
                         >
-                          {product.total_stock} und.
+                          {product.available_stock} und.
                         </span>
                       )}
                     </div>

@@ -2,11 +2,14 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\CaseSensitiveSearch;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class ProductSerial extends Model
 {
+    use CaseSensitiveSearch;
+
     public const STATUSES = ['available', 'sold', 'reserved', 'defective'];
 
     protected $fillable = ['product_id', 'warehouse_id', 'purchase_detail_id', 'serial_number', 'status', 'notes'];
