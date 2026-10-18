@@ -71,6 +71,22 @@ npm run dev
 
 Luego abre tu navegador en **http://localhost:5173**.
 
+## Actualizar una instalación existente
+
+El build de producción del frontend (`frontend/dist`) se versiona en el repositorio, así que el servidor no necesita compilarlo. Tras traer los cambios:
+
+```bash
+git pull origin main
+docker compose exec app php artisan migrate
+docker compose exec app php artisan db:seed --class=RolePermissionSeeder
+docker compose exec app php artisan config:clear
+```
+
+- `migrate` crea las tablas nuevas (por ejemplo cotizaciones, pedidos de venta, OC del Estado, cancelaciones y el stock reservado por almacén).
+- `RolePermissionSeeder` crea los permisos de los módulos nuevos (`quotations.*`, `sales-orders.*`, `government-orders.*`, `settlements.*`) y se los asigna a los roles base.
+  > ⚠️ Este seeder **restablece los permisos de fábrica** de los roles base (Super Admin, Administrador, Vendedor / Cajero, Técnico). Si se personalizaron sus permisos desde Administración → Roles y Permisos, habrá que volver a aplicar esos cambios. Los roles creados a mano no se modifican, pero tampoco reciben los permisos nuevos: asígnalos desde la misma pantalla.
+- Los usuarios deben cerrar sesión y volver a ingresar para que se carguen los permisos nuevos.
+
 ## Detener el sistema
 
 ```bash
