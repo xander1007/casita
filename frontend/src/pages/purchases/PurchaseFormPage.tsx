@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import type { FormEvent } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import {
   createPurchase,
   fetchPurchaseWarehouses,
@@ -15,6 +15,14 @@ import type { PurchaseDocumentType } from "../../types/purchases";
 import type { Contact } from "../../types/contacts";
 import type { Product } from "../../types/inventory";
 import type { Warehouse } from "../../types/inventory";
+import type { PurchaseSuggestion } from "../../types/salesOrders";
+
+interface OrderAllocation {
+  salesOrderItemId: number;
+  orderCode: string;
+  customer: string | null;
+  quantity: number;
+}
 
 interface PurchaseLine {
   key: string;
@@ -22,7 +30,11 @@ interface PurchaseLine {
   quantity: number;
   unitCost: number;
   serialNumbers: string[];
+  /** Back-to-back: units of this line bought for specific sales orders. */
+  allocations: OrderAllocation[];
 }
+
+const allocatedUnits = (line: PurchaseLine) => line.allocations.reduce((sum, a) => sum + a.quantity, 0);
 
 function todayIso(): string {
   return new Date().toISOString().slice(0, 10);
@@ -30,6 +42,7 @@ function todayIso(): string {
 
 export default function PurchaseFormPage() {
   const navigate = useNavigate();
+  const location = useLocation();
 
   const [supplier, setSupplier] = useState<Contact | null>(null);
   const [supplierSearch, setSupplierSearch] = useState("");
@@ -54,6 +67,50 @@ export default function PurchaseFormPage() {
 
   useEffect(() => {
     fetchPurchaseWarehouses().then(setWarehouses);
+  }, []);
+
+  // Coming from "Compras a demanda": preload warehouse, supplier and lines linked to their orders.
+  useEffect(() => {
+    const onDemand = (location.state as { onDemand?: PurchaseSuggestion[] } | null)?.onDemand;
+    if (!onDemand?.length) return;
+    navigate(location.pathname, { replace: true, state: null });
+
+    setWarehouseId(String(onDemand[0].warehouse_id));
+
+    const suppliers = new Map(onDemand.filter((s) => s.suggested_supplier).map((s) => [s.suggested_supplier!.id, s.suggested_supplier!]));
+    if (suppliers.size === 1) {
+      const suggested = [...suppliers.values()][0];
+      searchPurchaseSuppliers(suggested.document_number).then((found) => {
+        const match = found.find((c) => c.id === suggested.id);
+        if (match) setSupplier(match);
+      });
+    }
+
+    const byProduct = new Map<number, PurchaseSuggestion[]>();
+    for (const s of onDemand) byProduct.set(s.product_id, [...(byProduct.get(s.product_id) ?? []), s]);
+
+    Promise.all(
+      [...byProduct.entries()].map(async ([productId, rows]): Promise<PurchaseLine | null> => {
+        const found = await searchPurchaseProducts(rows[0].internal_code);
+        const product = found.find((p) => p.id === productId);
+        if (!product) return null;
+        const quantity = rows.reduce((sum, r) => sum + r.quantity_to_buy, 0);
+        return {
+          key: `product-${product.id}`,
+          product,
+          quantity,
+          unitCost: product.purchase_price || 0,
+          serialNumbers: [],
+          allocations: rows.map((r) => ({
+            salesOrderItemId: r.sales_order_item_id,
+            orderCode: r.order_code,
+            customer: r.customer,
+            quantity: r.quantity_to_buy,
+          })),
+        };
+      }),
+    ).then((lines) => setItems(lines.filter((line): line is PurchaseLine => line !== null)));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -120,10 +177,23 @@ export default function PurchaseFormPage() {
           quantity: 1,
           unitCost: product.purchase_price || 0,
           serialNumbers: [],
+          allocations: [],
         },
       ];
     });
   }
+
+  function removeAllocation(key: string, salesOrderItemId: number) {
+    setItems((current) =>
+      current.map((item) =>
+        item.key === key
+          ? { ...item, allocations: item.allocations.filter((a) => a.salesOrderItemId !== salesOrderItemId) }
+          : item,
+      ),
+    );
+  }
+
+  const hasAllocations = items.some((item) => item.allocations.length > 0);
 
   function updateLine(key: string, patch: Partial<Pick<PurchaseLine, "quantity" | "unitCost">>) {
     setItems((current) =>
@@ -168,6 +238,12 @@ export default function PurchaseFormPage() {
         );
         return;
       }
+      if (allocatedUnits(item) > item.quantity) {
+        setFormError(
+          `"${item.product.name}" tiene ${allocatedUnits(item)} unidad(es) asignadas a pedidos: la cantidad comprada no puede ser menor.`,
+        );
+        return;
+      }
     }
 
     setIsSubmitting(true);
@@ -183,6 +259,7 @@ export default function PurchaseFormPage() {
           quantity: item.quantity,
           unit_cost: item.unitCost,
           serial_numbers: item.product.requires_serial ? item.serialNumbers : undefined,
+          allocations: item.allocations.map((a) => ({ sales_order_item_id: a.salesOrderItemId, quantity: a.quantity })),
         })),
       });
       navigate("/purchases", { state: { createdPurchaseId: purchase.id } });
@@ -277,7 +354,8 @@ export default function PurchaseFormPage() {
               <select
                 value={warehouseId}
                 onChange={(e) => setWarehouseId(e.target.value)}
-                className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                disabled={hasAllocations}
+                className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 disabled:bg-slate-50"
               >
                 <option value="">Selecciona un almacén</option>
                 {warehouses.map((w) => (
@@ -286,6 +364,11 @@ export default function PurchaseFormPage() {
                   </option>
                 ))}
               </select>
+              {hasAllocations && (
+                <p className="mt-1 text-xs text-slate-400">
+                  Fijado por los pedidos a demanda: la mercadería debe ingresar donde se reservó.
+                </p>
+              )}
               {errors.warehouse_id && <p className="mt-1 text-sm text-red-600">{errors.warehouse_id[0]}</p>}
             </div>
 
@@ -407,6 +490,27 @@ export default function PurchaseFormPage() {
                   <tr key={item.key}>
                     <td className="px-3 py-2 align-top">
                       <div className="font-medium text-slate-900">{item.product.name}</div>
+                      {item.allocations.map((a) => (
+                        <div key={a.salesOrderItemId} className="mt-0.5 flex items-center gap-1 text-xs text-amber-700">
+                          <span>
+                            Para pedido {a.orderCode}
+                            {a.customer ? ` (${a.customer})` : ""}: {a.quantity} und.
+                          </span>
+                          <button
+                            type="button"
+                            onClick={() => removeAllocation(item.key, a.salesOrderItemId)}
+                            aria-label={`Desvincular pedido ${a.orderCode}`}
+                            className="text-slate-400 hover:text-red-600"
+                          >
+                            ✕
+                          </button>
+                        </div>
+                      ))}
+                      {allocatedUnits(item) > item.quantity && (
+                        <div className="text-xs font-medium text-red-600">
+                          Cantidad menor a lo asignado a pedidos ({allocatedUnits(item)}).
+                        </div>
+                      )}
                       {item.product.requires_serial && (
                         <button
                           type="button"

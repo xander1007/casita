@@ -73,6 +73,30 @@ export interface StoreSalePayload {
   document_type: DocumentType;
   items: SaleItemPayload[];
   payments: SalePaymentPayload[];
+  /** Source document being invoiced (at most one). */
+  quotation_id?: number | null;
+  sales_order_id?: number | null;
+}
+
+/** Cart contents of a quotation or sales order to be invoiced in the POS. */
+export interface PosSourcePayload {
+  contact: Contact;
+  items: { product: Product; quantity: number; unit_price: number }[];
+}
+
+export async function fetchPosQuotation(
+  id: number,
+  warehouseId: number,
+): Promise<PosSourcePayload & { quotation: { id: number; code: string } }> {
+  const { data } = await api.get(`/pos/quotations/${id}`, { params: { warehouse_id: warehouseId } });
+  return data;
+}
+
+export async function fetchPosSalesOrder(
+  id: number,
+): Promise<PosSourcePayload & { sales_order: { id: number; code: string; warehouse_id: number } }> {
+  const { data } = await api.get(`/pos/sales-orders/${id}`);
+  return data;
 }
 
 export async function createSale(

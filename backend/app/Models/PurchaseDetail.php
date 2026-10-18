@@ -39,4 +39,12 @@ class PurchaseDetail extends Model
     {
         return $this->hasMany(ProductSerial::class);
     }
+
+    /**
+     * Sales order lines this purchase line was bought for (back-to-back).
+     */
+    public function allocations(): HasMany
+    {
+        return $this->hasMany(PurchaseAllocation::class);
+    }
 }

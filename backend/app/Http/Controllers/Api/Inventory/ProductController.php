@@ -30,20 +30,16 @@ class ProductController extends Controller
 
         $query = Product::query()
             ->with(['category', 'brand'])
-            ->when(
-                $warehouseId,
-                fn ($q) => $q->withSum(['warehouseStocks as total_stock' => fn ($s) => $s->where('warehouse_id', $warehouseId)], 'quantity'),
-                fn ($q) => $q->withSum('warehouseStocks as total_stock', 'quantity'),
-            )
+            ->withStock($warehouseId ?: null)
             ->withCount('serials as serials_count')
             ->latest();
 
         if ($search = $request->string('search')->trim()->toString()) {
             $query->where(function ($q) use ($search) {
-                $q->where('name', 'like', "%{$search}%")
-                    ->orWhere('internal_code', 'like', "%{$search}%")
-                    ->orWhere('barcode', 'like', "%{$search}%")
-                    ->orWhereHas('serials', fn ($s) => $s->where('serial_number', 'like', "%{$search}%"));
+                $q->whereContainsExact('name', $search)
+                    ->orWhereContainsExact('internal_code', $search)
+                    ->orWhereContainsExact('barcode', $search)
+                    ->orWhereHas('serials', fn ($s) => $s->whereContainsExact('serial_number', $search));
             });
         }
 
@@ -83,6 +79,7 @@ class ProductController extends Controller
     {
         $product->load(['category', 'brand', 'warehouseStocks.warehouse']);
         $product->loadSum('warehouseStocks as total_stock', 'quantity');
+        $product->loadSum('warehouseStocks as reserved_stock', 'reserved_quantity');
         $product->loadCount('serials as serials_count');
 
         return response()->json([
@@ -91,6 +88,8 @@ class ProductController extends Controller
                 'warehouse_id' => $stock->warehouse_id,
                 'warehouse' => $stock->warehouse?->name,
                 'quantity' => $stock->quantity,
+                'reserved_quantity' => $stock->reserved_quantity,
+                'available_quantity' => $stock->available(),
             ]),
         ]);
     }
@@ -152,6 +151,12 @@ class ProductController extends Controller
             if ($newQuantity < 0) {
                 throw ValidationException::withMessages([
                     'quantity' => 'No hay suficiente stock disponible en este almacén.',
+                ]);
+            }
+
+            if ($newQuantity < $stock->reserved_quantity) {
+                throw ValidationException::withMessages([
+                    'quantity' => "{$stock->reserved_quantity} unidad(es) de este almacén están reservadas para pedidos de venta. El stock no puede quedar por debajo de esa cantidad.",
                 ]);
             }
 

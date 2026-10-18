@@ -103,16 +103,13 @@ class TechnicalServiceController extends Controller
         $query = Product::query()
             ->where('is_active', true)
             ->with(['category', 'brand'])
-            ->withSum(
-                ['warehouseStocks as total_stock' => fn ($s) => $s->where('warehouse_id', $warehouse->id)],
-                'quantity',
-            )
+            ->withStock($warehouse->id)
             ->latest();
 
         if ($search = $request->string('search')->trim()->toString()) {
             $query->where(function ($q) use ($search) {
-                $q->where('name', 'like', "%{$search}%")
-                    ->orWhere('internal_code', 'like', "%{$search}%");
+                $q->whereContainsExact('name', $search)
+                    ->orWhereContainsExact('internal_code', $search);
             });
         }
 
@@ -200,7 +197,7 @@ class TechnicalServiceController extends Controller
                     ->lockForUpdate()
                     ->first();
 
-                if (! $stock || $stock->quantity < $data['quantity']) {
+                if (! $stock || $stock->available() < $data['quantity']) {
                     throw ValidationException::withMessages([
                         'quantity' => "No hay suficiente stock de \"{$product->name}\" en el almacén de Servicio Técnico.",
                     ]);

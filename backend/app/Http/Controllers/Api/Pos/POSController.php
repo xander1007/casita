@@ -11,11 +11,14 @@ use App\Models\Contact;
 use App\Models\DocumentSeries;
 use App\Models\Product;
 use App\Models\ProductSerial;
+use App\Models\Quotation;
 use App\Models\Sale;
 use App\Models\SaleDetail;
 use App\Models\SalePayment;
+use App\Models\SalesOrder;
 use App\Models\StockMovement;
 use App\Models\WarehouseStock;
+use App\Services\Sales\SalesOrderService;
 use App\Support\NumberToLetters;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
@@ -27,6 +30,8 @@ class POSController extends Controller
      * The generic "Clientes Varios" walk-in customer used when no client is selected.
      */
     private const DEFAULT_CONTACT_DOCUMENT_NUMBER = '00000000';
+
+    public function __construct(private readonly SalesOrderService $salesOrders) {}
 
     /**
      * Process a POS sale in a single database transaction: assigns the next
@@ -141,6 +146,40 @@ class POSController extends Controller
             $igvTotal,
             $saleTotal,
         ) {
+            $salesOrder = null;
+            $quotation = null;
+
+            if (! empty($data['sales_order_id'])) {
+                // Frees the order's reservation so the stock checks below can consume those units.
+                $salesOrder = $this->salesOrders->releaseForSale(SalesOrder::query()->findOrFail($data['sales_order_id']), $warehouseId);
+
+                if ($salesOrder->contact_id !== $contact->id) {
+                    throw ValidationException::withMessages([
+                        'contact_id' => "El pedido {$salesOrder->code} pertenece a otro cliente.",
+                    ]);
+                }
+
+                // The whole reservation is released, so the sale must take all of it.
+                $ordered = $salesOrder->items()->get()->groupBy('product_id')->map->sum('quantity')->sortKeys();
+                $sold = collect($lines)->groupBy(fn ($line) => $line['product']->id)->map->sum('quantity')->sortKeys();
+
+                if ($ordered->all() != $sold->all()) {
+                    throw ValidationException::withMessages([
+                        'items' => "La venta debe incluir exactamente los productos y cantidades del pedido {$salesOrder->code}.",
+                    ]);
+                }
+            }
+
+            if (! empty($data['quotation_id'])) {
+                $quotation = Quotation::query()->lockForUpdate()->findOrFail($data['quotation_id']);
+
+                if ($quotation->status !== Quotation::STATUS_APPROVED) {
+                    throw ValidationException::withMessages([
+                        'quotation_id' => "La cotización {$quotation->code} no está aprobada o ya fue convertida.",
+                    ]);
+                }
+            }
+
             $series = DocumentSeries::query()
                 ->where('cash_register_id', $shift->cash_register_id)
                 ->where('document_type', $data['document_type'])
@@ -212,7 +251,7 @@ class POSController extends Controller
                     ->lockForUpdate()
                     ->first();
 
-                if (! $stock || $stock->quantity < $line['quantity']) {
+                if (! $stock || $stock->available() < $line['quantity']) {
                     throw ValidationException::withMessages([
                         'items' => "No hay suficiente stock de \"{$product->name}\" en esta caja.",
                     ]);
@@ -247,6 +286,16 @@ class POSController extends Controller
 
                 $shift->increment($shiftIncrements[$payment['payment_method']], $payment['amount']);
             }
+
+            if ($salesOrder) {
+                $this->salesOrders->markCompleted($salesOrder, $sale);
+            }
+
+            $quotation?->update([
+                'status' => Quotation::STATUS_CONVERTED,
+                'sale_id' => $sale->id,
+                'converted_at' => now(),
+            ]);
 
             return $sale;
         });

@@ -21,6 +21,11 @@ class PurchaseDetailResource extends JsonResource
             'unit_cost' => (float) $this->unit_cost,
             'subtotal' => (float) $this->subtotal,
             'serials' => ProductSerialResource::collection($this->whenLoaded('serials')),
+            'allocations' => $this->whenLoaded('allocations', fn () => $this->allocations->map(fn ($allocation) => [
+                'sales_order_id' => $allocation->salesOrderItem?->sales_order_id,
+                'order_code' => $allocation->salesOrderItem?->order?->code,
+                'quantity' => $allocation->quantity,
+            ])),
         ];
     }
 }

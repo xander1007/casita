@@ -32,6 +32,7 @@ export interface PurchaseDetail {
   unit_cost: number;
   subtotal: number;
   serials: PurchaseSerial[];
+  allocations?: { sales_order_id: number; order_code: string; quantity: number }[];
 }
 
 export interface Purchase {

@@ -42,7 +42,7 @@ export function CartPanel({ items, onUpdateQuantity, onRemove, onCheckout }: Car
                       <input
                         type="number"
                         min={1}
-                        max={item.product.total_stock || undefined}
+                        max={item.product.available_stock || undefined}
                         value={item.quantity}
                         onChange={(e) => onUpdateQuantity(item.key, Number(e.target.value))}
                         className="w-16 rounded-md border border-slate-300 px-2 py-1 text-sm"

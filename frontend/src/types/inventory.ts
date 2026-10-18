@@ -54,6 +54,10 @@ export interface Product {
   category: Category | null;
   brand: Brand | null;
   total_stock: number;
+  /** Units held by sales orders; only filled by endpoints that load it. */
+  reserved_stock: number;
+  /** total_stock - reserved_stock: what can actually be sold or consumed. */
+  available_stock: number;
   is_low_stock: boolean;
   serials_count?: number;
 }
@@ -62,6 +66,8 @@ export interface ProductStockByWarehouse {
   warehouse_id: number;
   warehouse: string;
   quantity: number;
+  reserved_quantity: number;
+  available_quantity: number;
 }
 
 export interface ProductSerial {

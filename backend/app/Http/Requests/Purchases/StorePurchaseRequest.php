@@ -32,6 +32,11 @@ class StorePurchaseRequest extends FormRequest
             'items.*.unit_cost' => ['required', 'numeric', 'min:0'],
             'items.*.serial_numbers' => ['array'],
             'items.*.serial_numbers.*' => ['string', 'max:255', 'distinct', 'unique:product_serials,serial_number'],
+
+            // Back-to-back: sales order lines ("a demanda") this purchase line is bought for.
+            'items.*.allocations' => ['array'],
+            'items.*.allocations.*.sales_order_item_id' => ['required', 'distinct', 'exists:sales_order_items,id'],
+            'items.*.allocations.*.quantity' => ['required', 'integer', 'min:1'],
         ];
     }
 
