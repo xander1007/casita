@@ -82,7 +82,7 @@ export function ServicePartsSection({ service, canManage, onChanged }: ServicePa
                   setSearch(e.target.value);
                 }}
                 placeholder="Buscar repuesto en almacén Servicio Técnico..."
-                className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                className="field w-full"
               />
               {!selected && results.length > 0 && (
                 <div className="absolute z-10 mt-1 max-h-40 w-full overflow-y-auto rounded-md border border-slate-200 bg-white shadow-sm">
@@ -110,13 +110,13 @@ export function ServicePartsSection({ service, canManage, onChanged }: ServicePa
               min="1"
               value={quantity}
               onChange={(e) => setQuantity(e.target.value)}
-              className="w-20 rounded-md border border-slate-300 px-2 py-2 text-sm"
+              className="field w-20 px-2"
             />
             <button
               type="button"
               disabled={!selected || isSubmitting}
               onClick={handleAdd}
-              className="rounded-md bg-indigo-600 px-3 py-2 text-sm font-medium text-white hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-50"
+              className="btn btn-primary"
             >
               Agregar
             </button>

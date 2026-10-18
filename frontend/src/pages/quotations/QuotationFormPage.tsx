@@ -11,8 +11,7 @@ import type { Contact } from "../../types/contacts";
 import type { Warehouse } from "../../types/inventory";
 import { localTodayIso } from "../../utils/dates";
 
-const inputClass =
-  "w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 disabled:bg-slate-50";
+const inputClass = "field w-full disabled:bg-slate-50";
 
 export default function QuotationFormPage() {
   const navigate = useNavigate();
@@ -120,7 +119,7 @@ export default function QuotationFormPage() {
       {formError && <div className="mt-4 rounded-md bg-red-50 px-3 py-2 text-sm text-red-700">{formError}</div>}
 
       <form onSubmit={handleSubmit} noValidate className="mt-4 space-y-6">
-        <section className="rounded-xl bg-white p-5 shadow-sm">
+        <section className="card p-5">
           <div className="grid gap-4 sm:grid-cols-2">
             <CustomerPicker value={customer} onChange={setCustomer} error={errors.contact_id?.[0]} />
 
@@ -172,7 +171,7 @@ export default function QuotationFormPage() {
           </div>
         </section>
 
-        <section className="rounded-xl bg-white p-5 shadow-sm">
+        <section className="card p-5">
           <h2 className="mb-3 text-base font-semibold text-slate-900">Productos</h2>
           <SalesLinesEditor
             lines={lines}
@@ -186,14 +185,14 @@ export default function QuotationFormPage() {
             <button
               type="button"
               onClick={() => navigate("/quotations")}
-              className="rounded-md border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50"
+              className="btn btn-secondary"
             >
               Cancelar
             </button>
             <button
               type="submit"
               disabled={isSubmitting}
-              className="rounded-md bg-indigo-600 px-6 py-2 text-sm font-semibold text-white hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-60"
+              className="btn btn-primary"
             >
               {isSubmitting ? "Guardando..." : editingId ? "Guardar cambios" : "Guardar cotización"}
             </button>

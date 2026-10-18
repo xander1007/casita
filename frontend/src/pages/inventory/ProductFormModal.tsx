@@ -97,7 +97,7 @@ export function ProductFormModal({
             value={name}
             onChange={(e) => setName(e.target.value)}
             required
-            className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+            className="field w-full"
           />
           {errors.name && <p className="mt-1 text-sm text-red-600">{errors.name[0]}</p>}
         </div>
@@ -110,7 +110,7 @@ export function ProductFormModal({
               value={internalCode}
               onChange={(e) => setInternalCode(e.target.value)}
               required
-              className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+              className="field w-full"
             />
             {errors.internal_code && (
               <p className="mt-1 text-sm text-red-600">{errors.internal_code[0]}</p>
@@ -122,7 +122,7 @@ export function ProductFormModal({
               type="text"
               value={barcode}
               onChange={(e) => setBarcode(e.target.value)}
-              className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+              className="field w-full"
             />
             {errors.barcode && <p className="mt-1 text-sm text-red-600">{errors.barcode[0]}</p>}
           </div>
@@ -134,7 +134,7 @@ export function ProductFormModal({
             <select
               value={categoryId}
               onChange={(e) => setCategoryId(e.target.value)}
-              className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+              className="field w-full"
             >
               <option value="">Sin categoría</option>
               {categories.map((c) => (
@@ -149,7 +149,7 @@ export function ProductFormModal({
             <select
               value={brandId}
               onChange={(e) => setBrandId(e.target.value)}
-              className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+              className="field w-full"
             >
               <option value="">Sin marca</option>
               {brands.map((b) => (
@@ -171,7 +171,7 @@ export function ProductFormModal({
               value={purchasePrice}
               onChange={(e) => setPurchasePrice(e.target.value)}
               required
-              className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+              className="field w-full"
             />
           </div>
           <div>
@@ -183,7 +183,7 @@ export function ProductFormModal({
               value={salePrice}
               onChange={(e) => setSalePrice(e.target.value)}
               required
-              className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+              className="field w-full"
             />
           </div>
         </div>
@@ -194,7 +194,7 @@ export function ProductFormModal({
             <select
               value={unitOfMeasure}
               onChange={(e) => setUnitOfMeasure(e.target.value)}
-              className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+              className="field w-full"
             >
               {UNITS_OF_MEASURE.map((u) => (
                 <option key={u.value} value={u.value}>
@@ -208,7 +208,7 @@ export function ProductFormModal({
             <select
               value={igvAffectation}
               onChange={(e) => setIgvAffectation(e.target.value)}
-              className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+              className="field w-full"
             >
               {IGV_AFFECTATIONS.map((a) => (
                 <option key={a.value} value={a.value}>
@@ -224,7 +224,7 @@ export function ProductFormModal({
               min="0"
               value={minStock}
               onChange={(e) => setMinStock(e.target.value)}
-              className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+              className="field w-full"
             />
           </div>
         </div>
@@ -235,7 +235,7 @@ export function ProductFormModal({
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             rows={2}
-            className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+            className="field w-full"
           />
         </div>
 
@@ -274,14 +274,14 @@ export function ProductFormModal({
           <button
             type="button"
             onClick={onClose}
-            className="rounded-md border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50"
+            className="btn btn-secondary"
           >
             Cancelar
           </button>
           <button
             type="submit"
             disabled={isSubmitting}
-            className="rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-60"
+            className="btn btn-primary"
           >
             {isSubmitting ? "Guardando..." : "Guardar"}
           </button>

@@ -70,7 +70,7 @@ function OpenShiftForm({
   }
 
   return (
-    <div className="mx-auto max-w-md rounded-xl bg-white p-8 shadow-sm">
+    <div className="card mx-auto max-w-md p-8">
       <h2 className="text-lg font-semibold text-slate-900">Apertura de Caja</h2>
       <p className="mt-1 text-sm text-slate-500">
         No tienes una caja abierta. Ingresa el monto inicial en efectivo para comenzar.
@@ -87,7 +87,7 @@ function OpenShiftForm({
             value={selectedRegisterId}
             onChange={(e) => setCashRegisterId(e.target.value)}
             required
-            className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+            className="field w-full"
           >
             {registers.map((r) => (
               <option key={r.id} value={r.id}>
@@ -107,13 +107,13 @@ function OpenShiftForm({
             value={openingBalance}
             onChange={(e) => setOpeningBalance(e.target.value)}
             required
-            className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+            className="field w-full"
           />
         </div>
         <button
           type="submit"
           disabled={isSubmitting || !selectedRegisterId}
-          className="w-full rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-60"
+          className="btn btn-primary w-full"
         >
           {isSubmitting ? "Abriendo..." : "Abrir caja"}
         </button>
@@ -157,7 +157,7 @@ function ShiftControlCard({ shift, onClosed }: { shift: CashShift; onClosed: () 
 
   return (
     <div className="mx-auto max-w-xl space-y-6">
-      <div className="rounded-xl bg-white p-6 shadow-sm">
+      <div className="card p-6">
         <div className="flex items-center justify-between">
           <div>
             <h2 className="text-lg font-semibold text-slate-900">
@@ -207,14 +207,14 @@ function ShiftControlCard({ shift, onClosed }: { shift: CashShift; onClosed: () 
           <div className="mt-6 flex gap-2">
             <Link
               to="/pos"
-              className="flex-1 rounded-md bg-indigo-600 px-4 py-2 text-center text-sm font-medium text-white hover:bg-indigo-700"
+              className="btn btn-primary flex-1 text-center"
             >
               Ir al Punto de Venta
             </Link>
             <button
               type="button"
               onClick={() => setShowCloseForm(true)}
-              className="flex-1 rounded-md bg-slate-800 px-4 py-2 text-sm font-medium text-white hover:bg-slate-900"
+              className="btn flex-1 bg-ink-800 text-white shadow-sm hover:bg-ink-900"
             >
               Cerrar caja / Arqueo
             </button>
@@ -223,7 +223,7 @@ function ShiftControlCard({ shift, onClosed }: { shift: CashShift; onClosed: () 
       </div>
 
       {showCloseForm && (
-        <div className="rounded-xl bg-white p-6 shadow-sm">
+        <div className="card p-6">
           <h3 className="text-base font-semibold text-slate-900">Cierre de caja (arqueo)</h3>
           <p className="mt-1 text-sm text-slate-500">
             Cuenta el efectivo físico en caja e ingresa el monto real.
@@ -245,7 +245,7 @@ function ShiftControlCard({ shift, onClosed }: { shift: CashShift; onClosed: () 
                 value={closingBalance}
                 onChange={(e) => setClosingBalance(e.target.value)}
                 required
-                className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                className="field w-full"
               />
             </div>
 
@@ -274,7 +274,7 @@ function ShiftControlCard({ shift, onClosed }: { shift: CashShift; onClosed: () 
                 value={notes}
                 onChange={(e) => setNotes(e.target.value)}
                 rows={2}
-                className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                className="field w-full"
               />
             </div>
 
@@ -282,14 +282,14 @@ function ShiftControlCard({ shift, onClosed }: { shift: CashShift; onClosed: () 
               <button
                 type="button"
                 onClick={() => setShowCloseForm(false)}
-                className="rounded-md border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50"
+                className="btn btn-secondary"
               >
                 Cancelar
               </button>
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-60"
+                className="btn btn-primary"
               >
                 {isSubmitting ? "Cerrando..." : "Confirmar cierre"}
               </button>

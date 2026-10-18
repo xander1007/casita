@@ -129,7 +129,7 @@ export function ProductSeriesModal({
             <select
               value={warehouseId}
               onChange={(e) => setWarehouseId(e.target.value)}
-              className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+              className="field w-full"
             >
               <option value="">Sin asignar</option>
               {warehouses.map((w) => (
@@ -148,14 +148,14 @@ export function ProductSeriesModal({
               onChange={(e) => setNewSerials(e.target.value)}
               rows={3}
               placeholder={"SN-0001\nSN-0002"}
-              className="w-full rounded-md border border-slate-300 px-3 py-2 font-mono text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+              className="field w-full font-mono"
             />
           </div>
           <div className="flex justify-end">
             <button
               type="submit"
               disabled={isSubmitting}
-              className="rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700 disabled:opacity-60"
+              className="btn btn-primary"
             >
               {isSubmitting ? "Guardando..." : "Registrar series"}
             </button>

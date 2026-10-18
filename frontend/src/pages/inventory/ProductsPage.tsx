@@ -8,6 +8,8 @@ import { ProductSeriesModal } from "./ProductSeriesModal";
 import type { Product } from "../../types/inventory";
 import type { Category, Brand } from "../../types/inventory";
 import type { PaginationMeta } from "../../types/common";
+import { EmptyTableRow } from "../../components/ui/EmptyState";
+import { Package } from "lucide-react";
 
 export default function ProductsPage() {
   const { hasPermission } = useAuth();
@@ -88,12 +90,12 @@ export default function ProductsPage() {
             value={search}
             onChange={(e) => applyFilters({ search: e.target.value })}
             placeholder="Buscar por nombre, código o serie..."
-            className="w-64 rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+            className="field w-64"
           />
           <select
             value={categoryFilter}
             onChange={(e) => applyFilters({ category: e.target.value })}
-            className="rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+            className="field"
           >
             <option value="">Todas las categorías</option>
             {categories.map((c) => (
@@ -105,7 +107,7 @@ export default function ProductsPage() {
           <select
             value={brandFilter}
             onChange={(e) => applyFilters({ brand: e.target.value })}
-            className="rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+            className="field"
           >
             <option value="">Todas las marcas</option>
             {brands.map((b) => (
@@ -120,16 +122,16 @@ export default function ProductsPage() {
           <button
             type="button"
             onClick={() => setModalProduct("new")}
-            className="rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700"
+            className="btn btn-primary"
           >
             + Nuevo producto
           </button>
         )}
       </div>
 
-      <div className="overflow-x-auto rounded-xl bg-white shadow-sm">
+      <div className="card overflow-x-auto">
         <table className="w-full text-left text-sm">
-          <thead className="border-b border-slate-200 text-slate-500">
+          <thead className="border-b border-slate-200 bg-slate-50 text-xs tracking-wide text-slate-500 uppercase">
             <tr>
               <th className="px-4 py-3 font-medium">Producto</th>
               <th className="px-4 py-3 font-medium">Código</th>
@@ -148,11 +150,7 @@ export default function ProductsPage() {
               </tr>
             )}
             {!isLoading && products.length === 0 && (
-              <tr>
-                <td colSpan={6} className="px-4 py-6 text-center text-slate-400">
-                  No se encontraron productos.
-                </td>
-              </tr>
+              <EmptyTableRow colSpan={6} icon={Package} title="No hay productos" description="Registra tu primer producto para empezar a vender y controlar stock." filtered={Boolean(search || categoryFilter || brandFilter)} />
             )}
             {!isLoading &&
               products.map((product) => (
@@ -161,17 +159,17 @@ export default function ProductsPage() {
                     <div className="font-medium text-slate-900">{product.name}</div>
                     <div className="flex gap-1 pt-1">
                       {product.is_service && (
-                        <span className="rounded-full bg-sky-100 px-2 py-0.5 text-xs text-sky-700">
+                        <span className="pill bg-sky-100 text-sky-700">
                           Servicio
                         </span>
                       )}
                       {product.requires_serial && (
-                        <span className="rounded-full bg-purple-100 px-2 py-0.5 text-xs text-purple-700">
+                        <span className="pill bg-purple-100 text-purple-700">
                           Serie
                         </span>
                       )}
                       {!product.is_active && (
-                        <span className="rounded-full bg-slate-200 px-2 py-0.5 text-xs text-slate-600">
+                        <span className="pill bg-slate-200 text-slate-600">
                           Inactivo
                         </span>
                       )}
@@ -193,7 +191,7 @@ export default function ProductsPage() {
                       <span className="text-xs text-slate-400">N/A</span>
                     ) : (
                       <span
-                        className={`rounded-full px-2 py-0.5 text-xs font-medium ${
+                        className={`pill ${
                           product.is_low_stock
                             ? "bg-red-100 text-red-700"
                             : "bg-emerald-100 text-emerald-700"
@@ -253,7 +251,7 @@ export default function ProductsPage() {
               type="button"
               disabled={meta.current_page <= 1}
               onClick={() => goToPage(meta.current_page - 1)}
-              className="rounded-md border border-slate-300 px-3 py-1 disabled:cursor-not-allowed disabled:opacity-40"
+              className="btn-sm btn-secondary"
             >
               Anterior
             </button>
@@ -261,7 +259,7 @@ export default function ProductsPage() {
               type="button"
               disabled={meta.current_page >= meta.last_page}
               onClick={() => goToPage(meta.current_page + 1)}
-              className="rounded-md border border-slate-300 px-3 py-1 disabled:cursor-not-allowed disabled:opacity-40"
+              className="btn-sm btn-secondary"
             >
               Siguiente
             </button>

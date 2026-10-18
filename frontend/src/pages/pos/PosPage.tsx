@@ -1,10 +1,12 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useEffectEvent, useRef, useState } from "react";
 import axios from "axios";
 import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Keyboard, Store, TriangleAlert, Wallet } from "lucide-react";
 import { fetchCurrentShift } from "../../api/cash";
 import { fetchPosQuotation, fetchPosSalesOrder } from "../../api/pos";
 import { deliverService, fetchServiceChargePayload } from "../../api/services";
 import { CatalogPanel } from "./CatalogPanel";
+import type { CatalogHandle } from "./CatalogPanel";
 import { CartPanel } from "./CartPanel";
 import { SerialPickerModal } from "./SerialPickerModal";
 import { CheckoutModal } from "./CheckoutModal";
@@ -54,9 +56,39 @@ export default function PosPage() {
   const [sourceError, setSourceError] = useState<string | null>(null);
   const [pendingSerials, setPendingSerials] = useState<PendingSerial[]>([]);
   const pendingSerialUnits = pendingSerials.reduce((sum, p) => sum + p.remaining, 0);
+  const catalogRef = useRef<CatalogHandle>(null);
+  const hasOpenModal = Boolean(serialPickerProduct || showCheckout || completedSale);
 
   useEffect(() => {
     fetchCurrentShift().then(setShift);
+  }, []);
+
+  function startCheckout() {
+    if (saleSource?.type === "order" && pendingSerialUnits > 0) {
+      setSourceError("Elige los números de serie pendientes del pedido antes de cobrar.");
+      return;
+    }
+    setSourceError(null);
+    setShowCheckout(true);
+  }
+
+  // Cashier shortcuts: F2 charge, F3 focus search, Esc clear search. Ignored while a modal is open.
+  const handleShortcut = useEffectEvent((event: KeyboardEvent) => {
+    if (hasOpenModal) return;
+    if (event.key === "F2") {
+      event.preventDefault();
+      if (cart.length > 0) startCheckout();
+    } else if (event.key === "F3") {
+      event.preventDefault();
+      catalogRef.current?.focusSearch();
+    } else if (event.key === "Escape") {
+      catalogRef.current?.clearSearch();
+    }
+  });
+
+  useEffect(() => {
+    window.addEventListener("keydown", handleShortcut);
+    return () => window.removeEventListener("keydown", handleShortcut);
   }, []);
 
   useEffect(() => {
@@ -250,15 +282,15 @@ export default function PosPage() {
 
   if (shift === null) {
     return (
-      <div className="mx-auto max-w-md rounded-xl bg-white p-8 text-center shadow-sm">
-        <h2 className="text-lg font-semibold text-slate-900">No tienes una caja abierta</h2>
+      <div className="card mx-auto mt-8 max-w-md p-8 text-center">
+        <span className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-red-50 text-red-600">
+          <Wallet className="h-7 w-7" strokeWidth={1.7} />
+        </span>
+        <h2 className="mt-4 text-lg font-semibold text-slate-900">No tienes una caja abierta</h2>
         <p className="mt-2 text-sm text-slate-500">
           Debes abrir un turno de caja antes de poder realizar ventas en el punto de venta.
         </p>
-        <Link
-          to="/cash/actual"
-          className="mt-4 inline-block rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700"
-        >
+        <Link to="/cash/actual" className="btn btn-primary mt-5">
           Ir a apertura de caja
         </Link>
       </div>
@@ -269,8 +301,11 @@ export default function PosPage() {
 
   if (!warehouseId) {
     return (
-      <div className="mx-auto max-w-md rounded-xl bg-white p-8 text-center shadow-sm">
-        <h2 className="text-lg font-semibold text-slate-900">Caja sin almacén asignado</h2>
+      <div className="card mx-auto mt-8 max-w-md p-8 text-center">
+        <span className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-amber-50 text-amber-600">
+          <TriangleAlert className="h-7 w-7" strokeWidth={1.7} />
+        </span>
+        <h2 className="mt-4 text-lg font-semibold text-slate-900">Caja sin almacén asignado</h2>
         <p className="mt-2 text-sm text-slate-500">
           La caja "{shift.cash_register?.name}" no tiene un almacén configurado. Contacta a un
           administrador para asignarle uno antes de vender.
@@ -280,20 +315,20 @@ export default function PosPage() {
   }
 
   return (
-    <div className="grid h-[calc(100vh-11rem)] grid-cols-1 gap-6 lg:grid-cols-[1fr_380px]">
+    <div className="flex flex-col gap-4 lg:h-[calc(100dvh-7rem)]">
       {chargingServiceCode && (
-        <div className="lg:col-span-2 rounded-md bg-emerald-50 px-3 py-2 text-sm text-emerald-700">
+        <div className="rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-2.5 text-sm text-emerald-700">
           Cobrando la orden de servicio técnico <strong>{chargingServiceCode}</strong>. Al confirmar la venta,
           la orden se marcará como entregada.
         </div>
       )}
 
       {sourceError && (
-        <div className="lg:col-span-2 rounded-md bg-red-50 px-3 py-2 text-sm text-red-700">{sourceError}</div>
+        <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-2.5 text-sm text-red-700">{sourceError}</div>
       )}
 
       {saleSource && (
-        <div className="lg:col-span-2 rounded-md bg-indigo-50 px-3 py-2 text-sm text-indigo-800">
+        <div className="rounded-lg border border-indigo-200 bg-indigo-50 px-4 py-2.5 text-sm text-indigo-800">
           <div className="flex flex-wrap items-center justify-between gap-2">
             <span>
               Facturando {saleSource.type === "order" ? "el pedido" : "la cotización"} <strong>{saleSource.code}</strong>.
@@ -324,28 +359,46 @@ export default function PosPage() {
         </div>
       )}
 
-      <div className="min-h-0 rounded-xl bg-white p-4 shadow-sm">
-        <CatalogPanel
-          warehouseId={warehouseId}
-          onSelectProduct={addProduct}
-          refreshIndex={catalogRefreshIndex}
-        />
-      </div>
+      <div className="grid min-h-0 flex-1 grid-cols-1 gap-4 lg:grid-cols-[minmax(0,1fr)_380px] xl:grid-cols-[minmax(0,1fr)_420px]">
+        <div className="card flex min-h-[28rem] flex-col p-4 lg:min-h-0">
+          <div className="min-h-0 flex-1">
+            <CatalogPanel
+              ref={catalogRef}
+              warehouseId={warehouseId}
+              onSelectProduct={addProduct}
+              refreshIndex={catalogRefreshIndex}
+            />
+          </div>
+          <div className="mt-3 hidden flex-wrap items-center gap-x-4 gap-y-1 border-t border-slate-100 pt-3 text-xs text-slate-400 sm:flex">
+            <span className="inline-flex items-center gap-1.5">
+              <Keyboard className="h-3.5 w-3.5" />
+              Atajos:
+            </span>
+            {[
+              ["F3", "Buscar"],
+              ["Enter", "Agregar (1 resultado)"],
+              ["Esc", "Limpiar búsqueda"],
+              ["F2", "Cobrar"],
+            ].map(([key, label]) => (
+              <span key={key} className="inline-flex items-center gap-1.5">
+                <kbd className="rounded border border-slate-200 bg-slate-50 px-1.5 py-0.5 font-sans text-[10px] font-medium text-slate-500">
+                  {key}
+                </kbd>
+                {label}
+              </span>
+            ))}
+            {shift.cash_register?.name && (
+              <span className="ml-auto inline-flex items-center gap-1.5">
+                <Store className="h-3.5 w-3.5" />
+                {shift.cash_register.name}
+              </span>
+            )}
+          </div>
+        </div>
 
-      <div className="min-h-0 rounded-xl bg-white p-4 shadow-sm">
-        <CartPanel
-          items={cart}
-          onUpdateQuantity={updateQuantity}
-          onRemove={removeItem}
-          onCheckout={() => {
-            if (saleSource?.type === "order" && pendingSerialUnits > 0) {
-              setSourceError("Elige los números de serie pendientes del pedido antes de cobrar.");
-              return;
-            }
-            setSourceError(null);
-            setShowCheckout(true);
-          }}
-        />
+        <div className="card flex min-h-[24rem] flex-col overflow-hidden lg:min-h-0">
+          <CartPanel items={cart} onUpdateQuantity={updateQuantity} onRemove={removeItem} onCheckout={startCheckout} />
+        </div>
       </div>
 
       {serialPickerProduct && (

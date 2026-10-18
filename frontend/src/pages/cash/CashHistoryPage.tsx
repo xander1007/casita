@@ -34,9 +34,9 @@ export default function CashHistoryPage() {
 
   return (
     <div>
-      <div className="overflow-x-auto rounded-xl bg-white shadow-sm">
+      <div className="card overflow-x-auto">
         <table className="w-full text-left text-sm">
-          <thead className="border-b border-slate-200 text-slate-500">
+          <thead className="border-b border-slate-200 bg-slate-50 text-xs tracking-wide text-slate-500 uppercase">
             <tr>
               <th className="px-4 py-3 font-medium">Caja</th>
               <th className="px-4 py-3 font-medium">Usuario</th>
@@ -99,7 +99,7 @@ export default function CashHistoryPage() {
                   </td>
                   <td className="px-4 py-3">
                     <span
-                      className={`rounded-full px-2 py-0.5 text-xs font-medium ${
+                      className={`pill ${
                         shift.status === "open"
                           ? "bg-emerald-100 text-emerald-700"
                           : "bg-slate-200 text-slate-600"
@@ -124,7 +124,7 @@ export default function CashHistoryPage() {
               type="button"
               disabled={meta.current_page <= 1}
               onClick={() => goToPage(meta.current_page - 1)}
-              className="rounded-md border border-slate-300 px-3 py-1 disabled:cursor-not-allowed disabled:opacity-40"
+              className="btn-sm btn-secondary"
             >
               Anterior
             </button>
@@ -132,7 +132,7 @@ export default function CashHistoryPage() {
               type="button"
               disabled={meta.current_page >= meta.last_page}
               onClick={() => goToPage(meta.current_page + 1)}
-              className="rounded-md border border-slate-300 px-3 py-1 disabled:cursor-not-allowed disabled:opacity-40"
+              className="btn-sm btn-secondary"
             >
               Siguiente
             </button>

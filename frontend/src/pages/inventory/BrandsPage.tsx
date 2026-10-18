@@ -31,16 +31,16 @@ export default function BrandsPage() {
           <button
             type="button"
             onClick={() => setModalBrand("new")}
-            className="rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700"
+            className="btn btn-primary"
           >
             + Nueva marca
           </button>
         </div>
       )}
 
-      <div className="overflow-x-auto rounded-xl bg-white shadow-sm">
+      <div className="card overflow-x-auto">
         <table className="w-full text-left text-sm">
-          <thead className="border-b border-slate-200 text-slate-500">
+          <thead className="border-b border-slate-200 bg-slate-50 text-xs tracking-wide text-slate-500 uppercase">
             <tr>
               <th className="px-4 py-3 font-medium">Nombre</th>
               <th className="px-4 py-3 font-medium">Estado</th>
@@ -53,7 +53,7 @@ export default function BrandsPage() {
                 <td className="px-4 py-3 text-slate-900">{brand.name}</td>
                 <td className="px-4 py-3">
                   <span
-                    className={`rounded-full px-2 py-0.5 text-xs font-medium ${
+                    className={`pill ${
                       brand.is_active ? "bg-emerald-100 text-emerald-700" : "bg-slate-200 text-slate-600"
                     }`}
                   >
@@ -148,21 +148,21 @@ function BrandFormModal({
             value={name}
             onChange={(e) => setName(e.target.value)}
             required
-            className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+            className="field w-full"
           />
         </div>
         <div className="flex justify-end gap-2 pt-2">
           <button
             type="button"
             onClick={onClose}
-            className="rounded-md border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50"
+            className="btn btn-secondary"
           >
             Cancelar
           </button>
           <button
             type="submit"
             disabled={isSubmitting}
-            className="rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700 disabled:opacity-60"
+            className="btn btn-primary"
           >
             {isSubmitting ? "Guardando..." : "Guardar"}
           </button>

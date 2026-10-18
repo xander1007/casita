@@ -5,6 +5,8 @@ import type { KardexRow, ReportRangeFilters, SalesRegistryRow } from "../../type
 import type { PaginationMeta } from "../../types/common";
 import { useAuth } from "../../context/useAuth";
 import { DateRangeFilter } from "./DateRangeFilter";
+import { EmptyTableRow } from "../../components/ui/EmptyState";
+import { ArrowLeftRight, Receipt } from "lucide-react";
 
 type Tab = "sales" | "kardex";
 
@@ -85,7 +87,7 @@ export default function ReportsPage() {
         {canSeeSunat && (
           <Link
             to="/reports/sunat"
-            className="rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700"
+            className="btn btn-primary"
           >
             Reportes Oficiales SUNAT (SIRE/PLE) →
           </Link>
@@ -100,7 +102,7 @@ export default function ReportsPage() {
             type="button"
             onClick={handleExport}
             disabled={isExporting}
-            className="rounded-md bg-emerald-600 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-700 disabled:cursor-not-allowed disabled:opacity-60"
+            className="btn btn-success"
           >
             {isExporting ? "Exportando..." : "Descargar CSV / Excel"}
           </button>
@@ -128,10 +130,10 @@ export default function ReportsPage() {
         </button>
       </div>
 
-      <div className="mt-4 overflow-x-auto rounded-xl bg-white shadow-sm">
+      <div className="card mt-4 overflow-x-auto">
         {tab === "sales" ? (
           <table className="w-full text-left text-sm">
-            <thead className="border-b border-slate-200 text-slate-500">
+            <thead className="border-b border-slate-200 bg-slate-50 text-xs tracking-wide text-slate-500 uppercase">
               <tr>
                 <th className="px-4 py-3 font-medium">Fecha</th>
                 <th className="px-4 py-3 font-medium">Comprobante</th>
@@ -151,11 +153,7 @@ export default function ReportsPage() {
                 </tr>
               )}
               {!isLoading && salesRows.length === 0 && (
-                <tr>
-                  <td colSpan={7} className="px-4 py-6 text-center text-slate-400">
-                    No se encontraron ventas en el período.
-                  </td>
-                </tr>
+                <EmptyTableRow colSpan={7} icon={Receipt} title="Sin ventas en el período" description="Prueba con otro rango de fechas." />
               )}
               {!isLoading &&
                 salesRows.map((sale) => (
@@ -175,7 +173,7 @@ export default function ReportsPage() {
           </table>
         ) : (
           <table className="w-full text-left text-sm">
-            <thead className="border-b border-slate-200 text-slate-500">
+            <thead className="border-b border-slate-200 bg-slate-50 text-xs tracking-wide text-slate-500 uppercase">
               <tr>
                 <th className="px-4 py-3 font-medium">Fecha</th>
                 <th className="px-4 py-3 font-medium">Producto</th>
@@ -195,11 +193,7 @@ export default function ReportsPage() {
                 </tr>
               )}
               {!isLoading && kardexRows.length === 0 && (
-                <tr>
-                  <td colSpan={7} className="px-4 py-6 text-center text-slate-400">
-                    No se encontraron movimientos en el período.
-                  </td>
-                </tr>
+                <EmptyTableRow colSpan={7} icon={ArrowLeftRight} title="Sin movimientos en el período" description="Prueba con otro rango de fechas." />
               )}
               {!isLoading &&
                 kardexRows.map((row) => (
@@ -209,7 +203,7 @@ export default function ReportsPage() {
                     <td className="px-4 py-3 text-slate-600">{row.warehouse}</td>
                     <td className="px-4 py-3">
                       <span
-                        className={`rounded-full px-2 py-0.5 text-xs font-medium ${
+                        className={`pill ${
                           row.type === "in"
                             ? "bg-emerald-100 text-emerald-700"
                             : row.type === "out"
@@ -240,7 +234,7 @@ export default function ReportsPage() {
               type="button"
               disabled={meta.current_page <= 1}
               onClick={() => setPage(meta.current_page - 1)}
-              className="rounded-md border border-slate-300 px-3 py-1 disabled:cursor-not-allowed disabled:opacity-40"
+              className="btn-sm btn-secondary"
             >
               Anterior
             </button>
@@ -248,7 +242,7 @@ export default function ReportsPage() {
               type="button"
               disabled={meta.current_page >= meta.last_page}
               onClick={() => setPage(meta.current_page + 1)}
-              className="rounded-md border border-slate-300 px-3 py-1 disabled:cursor-not-allowed disabled:opacity-40"
+              className="btn-sm btn-secondary"
             >
               Siguiente
             </button>

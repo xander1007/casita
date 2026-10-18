@@ -66,7 +66,7 @@ export function PurchaseDetailModal({ purchase, onClose, onAnnulled }: PurchaseD
       </div>
 
       <table className="mt-4 w-full text-left text-sm">
-        <thead className="border-b border-slate-200 text-slate-500">
+        <thead className="border-b border-slate-200 bg-slate-50 text-xs tracking-wide text-slate-500 uppercase">
           <tr>
             <th className="py-2">Producto</th>
             <th className="py-2 text-right">Cant.</th>
@@ -131,13 +131,13 @@ export function PurchaseDetailModal({ purchase, onClose, onAnnulled }: PurchaseD
                 onChange={(e) => setReason(e.target.value)}
                 placeholder="Motivo de anulación"
                 rows={2}
-                className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                className="field w-full"
               />
               <div className="flex justify-end gap-2">
                 <button
                   type="button"
                   onClick={() => setShowAnnulForm(false)}
-                  className="rounded-md border border-slate-300 px-3 py-1.5 text-sm text-slate-700 hover:bg-slate-50"
+                  className="btn-sm btn-secondary"
                 >
                   Cancelar
                 </button>
@@ -145,7 +145,7 @@ export function PurchaseDetailModal({ purchase, onClose, onAnnulled }: PurchaseD
                   type="button"
                   disabled={isSubmitting || reason.trim().length === 0}
                   onClick={handleAnnul}
-                  className="rounded-md bg-red-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-60"
+                  className="btn-sm btn-danger text-sm"
                 >
                   {isSubmitting ? "Anulando..." : "Confirmar anulación"}
                 </button>

@@ -1,14 +1,22 @@
 <!doctype html>
-<html lang="en">
+<html lang="es">
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>frontend</title>
-    <script type="module" crossorigin src="/assets/index-C9Blh-Al.js"></script>
-    <link rel="stylesheet" crossorigin href="/assets/index-CLSwK1wU.css">
+    <title>SistemaCasita</title>
+    <script>
+      // Apply the saved theme (or the OS preference) before first paint to avoid a flash.
+      try {
+        var saved = localStorage.getItem("casita_theme");
+        var dark = saved ? saved === "dark" : window.matchMedia("(prefers-color-scheme: dark)").matches;
+        if (dark) document.documentElement.classList.add("dark");
+      } catch (e) {}
+    </script>
+    <script type="module" crossorigin src="/assets/index-r_6i-UMV.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-Dy4AXObD.css">
   </head>
-  <body>
+  <body class="bg-slate-100 text-slate-900 antialiased dark:bg-ink-950">
     <div id="root"></div>
   </body>
 </html>

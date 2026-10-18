@@ -150,7 +150,7 @@ export function DespatchReceptionModal({ onClose, onCreated }: DespatchReception
         <div>
           <span className="mb-1 block text-sm font-medium text-slate-700">Destinatario</span>
           {contact ? (
-            <div className="flex items-center justify-between rounded-md border border-slate-300 px-3 py-2 text-sm">
+            <div className="field flex items-center justify-between">
               <span>
                 {contact.name_or_business_name}{" "}
                 <span className="text-xs text-slate-400">({contact.document_number})</span>
@@ -170,7 +170,7 @@ export function DespatchReceptionModal({ onClose, onCreated }: DespatchReception
                 value={contactSearch}
                 onChange={(e) => setContactSearch(e.target.value)}
                 placeholder="Buscar por nombre, RUC o DNI..."
-                className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                className="field w-full"
               />
               {contactResults.length > 0 && (
                 <div className="mt-1 max-h-32 overflow-y-auto rounded-md border border-slate-200">
@@ -198,7 +198,7 @@ export function DespatchReceptionModal({ onClose, onCreated }: DespatchReception
         <div>
           <span className="mb-1 block text-sm font-medium text-slate-700">Comprobante referenciado (opcional)</span>
           {referenceSale ? (
-            <div className="flex items-center justify-between rounded-md border border-slate-300 px-3 py-2 text-sm">
+            <div className="field flex items-center justify-between">
               <span>{referenceSale.document_number}</span>
               <button
                 type="button"
@@ -215,7 +215,7 @@ export function DespatchReceptionModal({ onClose, onCreated }: DespatchReception
                 value={saleSearch}
                 onChange={(e) => setSaleSearch(e.target.value)}
                 placeholder="Buscar comprobante por serie/número..."
-                className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                className="field w-full"
               />
               {saleResults.length > 0 && (
                 <div className="mt-1 max-h-32 overflow-y-auto rounded-md border border-slate-200">
@@ -247,7 +247,7 @@ export function DespatchReceptionModal({ onClose, onCreated }: DespatchReception
               required
               value={startingAddress}
               onChange={(e) => setStartingAddress(e.target.value)}
-              className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
+              className="field w-full"
             />
           </div>
           <div>
@@ -257,7 +257,7 @@ export function DespatchReceptionModal({ onClose, onCreated }: DespatchReception
               required
               value={arrivalAddress}
               onChange={(e) => setArrivalAddress(e.target.value)}
-              className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
+              className="field w-full"
             />
           </div>
         </div>
@@ -268,7 +268,7 @@ export function DespatchReceptionModal({ onClose, onCreated }: DespatchReception
             <select
               value={transportReason}
               onChange={(e) => setTransportReason(e.target.value as TransportReason)}
-              className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
+              className="field w-full"
             >
               {TRANSPORT_REASONS.map((reason) => (
                 <option key={reason} value={reason}>
@@ -285,7 +285,7 @@ export function DespatchReceptionModal({ onClose, onCreated }: DespatchReception
               min="0"
               value={grossWeight}
               onChange={(e) => setGrossWeight(e.target.value)}
-              className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
+              className="field w-full"
             />
           </div>
           <div>
@@ -295,7 +295,7 @@ export function DespatchReceptionModal({ onClose, onCreated }: DespatchReception
               min="0"
               value={packageCount}
               onChange={(e) => setPackageCount(e.target.value)}
-              className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
+              className="field w-full"
             />
           </div>
         </div>
@@ -308,7 +308,7 @@ export function DespatchReceptionModal({ onClose, onCreated }: DespatchReception
               required
               value={transportStartDate}
               onChange={(e) => setTransportStartDate(e.target.value)}
-              className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
+              className="field w-full"
             />
           </div>
           <div>
@@ -317,7 +317,7 @@ export function DespatchReceptionModal({ onClose, onCreated }: DespatchReception
               type="date"
               value={deliveryDate}
               onChange={(e) => setDeliveryDate(e.target.value)}
-              className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
+              className="field w-full"
             />
           </div>
         </div>
@@ -330,28 +330,28 @@ export function DespatchReceptionModal({ onClose, onCreated }: DespatchReception
               value={vehiclePlate}
               onChange={(e) => setVehiclePlate(e.target.value)}
               placeholder="Nro. de placa"
-              className="rounded-md border border-slate-300 px-3 py-2 text-sm"
+              className="field"
             />
             <input
               type="text"
               value={vehicleBrand}
               onChange={(e) => setVehicleBrand(e.target.value)}
               placeholder="Marca del vehículo"
-              className="rounded-md border border-slate-300 px-3 py-2 text-sm"
+              className="field"
             />
             <input
               type="text"
               value={driverDni}
               onChange={(e) => setDriverDni(e.target.value)}
               placeholder="DNI del conductor"
-              className="rounded-md border border-slate-300 px-3 py-2 text-sm"
+              className="field"
             />
             <input
               type="text"
               value={driverLicense}
               onChange={(e) => setDriverLicense(e.target.value)}
               placeholder="N° de licencia"
-              className="rounded-md border border-slate-300 px-3 py-2 text-sm"
+              className="field"
             />
           </div>
         </div>
@@ -371,7 +371,7 @@ export function DespatchReceptionModal({ onClose, onCreated }: DespatchReception
                   value={item.code ?? ""}
                   onChange={(e) => updateItem(index, { code: e.target.value })}
                   placeholder="Código"
-                  className="col-span-2 rounded-md border border-slate-300 px-2 py-1.5 text-sm"
+                  className="field-sm col-span-2"
                 />
                 <input
                   type="text"
@@ -379,7 +379,7 @@ export function DespatchReceptionModal({ onClose, onCreated }: DespatchReception
                   value={item.description}
                   onChange={(e) => updateItem(index, { description: e.target.value })}
                   placeholder="Descripción"
-                  className="col-span-5 rounded-md border border-slate-300 px-2 py-1.5 text-sm"
+                  className="field-sm col-span-5"
                 />
                 <input
                   type="number"
@@ -389,14 +389,14 @@ export function DespatchReceptionModal({ onClose, onCreated }: DespatchReception
                   value={item.quantity}
                   onChange={(e) => updateItem(index, { quantity: Number(e.target.value) })}
                   placeholder="Cant."
-                  className="col-span-2 rounded-md border border-slate-300 px-2 py-1.5 text-sm"
+                  className="field-sm col-span-2"
                 />
                 <input
                   type="text"
                   value={item.unit_of_measure}
                   onChange={(e) => updateItem(index, { unit_of_measure: e.target.value })}
                   placeholder="Unid."
-                  className="col-span-1 rounded-md border border-slate-300 px-2 py-1.5 text-sm"
+                  className="field-sm col-span-1"
                 />
                 <input
                   type="number"
@@ -405,7 +405,7 @@ export function DespatchReceptionModal({ onClose, onCreated }: DespatchReception
                   value={item.weight ?? ""}
                   onChange={(e) => updateItem(index, { weight: e.target.value ? Number(e.target.value) : null })}
                   placeholder="Peso"
-                  className="col-span-1 rounded-md border border-slate-300 px-2 py-1.5 text-sm"
+                  className="field-sm col-span-1"
                 />
                 <button
                   type="button"
@@ -425,7 +425,7 @@ export function DespatchReceptionModal({ onClose, onCreated }: DespatchReception
             value={observations}
             onChange={(e) => setObservations(e.target.value)}
             rows={2}
-            className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
+            className="field w-full"
           />
         </div>
 
@@ -435,7 +435,7 @@ export function DespatchReceptionModal({ onClose, onCreated }: DespatchReception
             type="text"
             value={orderNumber}
             onChange={(e) => setOrderNumber(e.target.value)}
-            className="w-64 rounded-md border border-slate-300 px-3 py-2 text-sm"
+            className="field w-64"
           />
         </div>
 
@@ -443,14 +443,14 @@ export function DespatchReceptionModal({ onClose, onCreated }: DespatchReception
           <button
             type="button"
             onClick={onClose}
-            className="rounded-md border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50"
+            className="btn btn-secondary"
           >
             Cancelar
           </button>
           <button
             type="submit"
             disabled={isSubmitting}
-            className="rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-60"
+            className="btn btn-primary"
           >
             {isSubmitting ? "Guardando..." : "Emitir guía"}
           </button>

@@ -89,7 +89,7 @@ export function SalesOrderDetailModal({ order, onClose, onChanged }: SalesOrderD
         <div className="sm:text-right">
           <p className="text-slate-500">Total</p>
           <p className="text-lg font-semibold text-slate-900">S/ {order.total.toFixed(2)}</p>
-          <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${SALES_ORDER_STATUS_STYLES[order.status]}`}>
+          <span className={`pill ${SALES_ORDER_STATUS_STYLES[order.status]}`}>
             {SALES_ORDER_STATUS_LABELS[order.status]}
           </span>
         </div>
@@ -115,7 +115,7 @@ export function SalesOrderDetailModal({ order, onClose, onChanged }: SalesOrderD
                   <div className="font-medium text-slate-900">
                     {item.product?.name}
                     {item.is_on_demand && (
-                      <span className="ml-2 rounded-full bg-amber-100 px-2 py-0.5 text-xs font-medium text-amber-700">
+                      <span className="pill ml-2 bg-amber-100 text-amber-700">
                         A demanda
                       </span>
                     )}
@@ -157,7 +157,7 @@ export function SalesOrderDetailModal({ order, onClose, onChanged }: SalesOrderD
             <button
               type="button"
               onClick={() => setShowCancelForm(true)}
-              className="rounded-md border border-red-300 px-4 py-2 text-sm font-medium text-red-600 hover:bg-red-50"
+              className="btn border border-red-300 bg-white text-red-600 hover:bg-red-50"
             >
               Cancelar pedido
             </button>
@@ -166,7 +166,7 @@ export function SalesOrderDetailModal({ order, onClose, onChanged }: SalesOrderD
             <button
               type="button"
               onClick={buyMissing}
-              className="rounded-md bg-amber-600 px-4 py-2 text-sm font-medium text-white hover:bg-amber-700"
+              className="btn bg-amber-600 text-white shadow-sm hover:bg-amber-700"
             >
               Comprar faltantes
             </button>
@@ -175,7 +175,7 @@ export function SalesOrderDetailModal({ order, onClose, onChanged }: SalesOrderD
             <button
               type="button"
               onClick={() => navigate("/pos", { state: { salesOrderId: order.id } })}
-              className="rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700"
+              className="btn btn-primary"
             >
               Facturar en POS
             </button>
@@ -190,7 +190,7 @@ export function SalesOrderDetailModal({ order, onClose, onChanged }: SalesOrderD
             type="text"
             value={reason}
             onChange={(e) => setReason(e.target.value)}
-            className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-red-500 focus:outline-none focus:ring-1 focus:ring-red-500"
+            className="field w-full focus:border-red-500 focus:ring-red-500/20"
           />
           <p className="mt-1 text-xs text-slate-500">
             Se libera el stock reservado. Las unidades ya compradas para este pedido quedan como stock libre.
@@ -199,7 +199,7 @@ export function SalesOrderDetailModal({ order, onClose, onChanged }: SalesOrderD
             <button
               type="button"
               onClick={() => setShowCancelForm(false)}
-              className="rounded-md border border-slate-300 px-4 py-2 text-sm text-slate-700 hover:bg-slate-50"
+              className="btn btn-secondary"
             >
               Volver
             </button>
@@ -207,7 +207,7 @@ export function SalesOrderDetailModal({ order, onClose, onChanged }: SalesOrderD
               type="button"
               disabled={isSubmitting || reason.trim() === ""}
               onClick={handleCancel}
-              className="rounded-md bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-700 disabled:opacity-60"
+              className="btn btn-danger"
             >
               Confirmar cancelación
             </button>

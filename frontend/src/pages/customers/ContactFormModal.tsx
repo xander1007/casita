@@ -102,7 +102,7 @@ export function ContactFormModal({ contact, onClose, onSaved }: ContactFormModal
             <select
               value={documentType}
               onChange={(e) => setDocumentType(e.target.value)}
-              className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+              className="field w-full"
             >
               {DOCUMENT_TYPES.map((d) => (
                 <option key={d.value} value={d.value}>
@@ -118,7 +118,7 @@ export function ContactFormModal({ contact, onClose, onSaved }: ContactFormModal
               value={documentNumber}
               onChange={(e) => setDocumentNumber(e.target.value)}
               required
-              className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+              className="field w-full"
             />
             {errors.document_number && (
               <p className="mt-1 text-sm text-red-600">{errors.document_number[0]}</p>
@@ -135,7 +135,7 @@ export function ContactFormModal({ contact, onClose, onSaved }: ContactFormModal
             value={name}
             onChange={(e) => setName(e.target.value)}
             required
-            className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+            className="field w-full"
           />
           {errors.name_or_business_name && (
             <p className="mt-1 text-sm text-red-600">{errors.name_or_business_name[0]}</p>
@@ -148,7 +148,7 @@ export function ContactFormModal({ contact, onClose, onSaved }: ContactFormModal
             type="text"
             value={address}
             onChange={(e) => setAddress(e.target.value)}
-            className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+            className="field w-full"
           />
         </div>
 
@@ -159,7 +159,7 @@ export function ContactFormModal({ contact, onClose, onSaved }: ContactFormModal
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+              className="field w-full"
             />
             {errors.email && <p className="mt-1 text-sm text-red-600">{errors.email[0]}</p>}
           </div>
@@ -169,7 +169,7 @@ export function ContactFormModal({ contact, onClose, onSaved }: ContactFormModal
               type="text"
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
-              className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+              className="field w-full"
             />
           </div>
         </div>
@@ -188,14 +188,14 @@ export function ContactFormModal({ contact, onClose, onSaved }: ContactFormModal
           <button
             type="button"
             onClick={onClose}
-            className="rounded-md border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50"
+            className="btn btn-secondary"
           >
             Cancelar
           </button>
           <button
             type="submit"
             disabled={isSubmitting}
-            className="rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-60"
+            className="btn btn-primary"
           >
             {isSubmitting ? "Guardando..." : "Guardar"}
           </button>

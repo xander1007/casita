@@ -47,16 +47,16 @@ export default function DocumentSeriesPage() {
           <button
             type="button"
             onClick={() => setModalSeries("new")}
-            className="rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700"
+            className="btn btn-primary"
           >
             + Nueva serie
           </button>
         </div>
       )}
 
-      <div className="overflow-x-auto rounded-xl bg-white shadow-sm">
+      <div className="card overflow-x-auto">
         <table className="w-full text-left text-sm">
-          <thead className="border-b border-slate-200 text-slate-500">
+          <thead className="border-b border-slate-200 bg-slate-50 text-xs tracking-wide text-slate-500 uppercase">
             <tr>
               <th className="px-4 py-3 font-medium">Tipo de documento</th>
               <th className="px-4 py-3 font-medium">Serie</th>
@@ -70,7 +70,7 @@ export default function DocumentSeriesPage() {
             {series.map((item) => (
               <tr key={item.id}>
                 <td className="px-4 py-3">
-                  <span className="rounded-full bg-slate-100 px-2 py-0.5 text-xs text-slate-600">
+                  <span className="pill bg-slate-100 text-slate-600">
                     {typeLabel(item.document_type)}
                   </span>
                 </td>
@@ -81,7 +81,7 @@ export default function DocumentSeriesPage() {
                 <td className="px-4 py-3 text-slate-500">{item.cash_register?.name ?? "—"}</td>
                 <td className="px-4 py-3">
                   <span
-                    className={`rounded-full px-2 py-0.5 text-xs font-medium ${
+                    className={`pill ${
                       item.is_active ? "bg-emerald-100 text-emerald-700" : "bg-slate-200 text-slate-600"
                     }`}
                   >
@@ -189,7 +189,7 @@ function SeriesFormModal({
           <select
             value={documentType}
             onChange={(e) => setDocumentType(e.target.value)}
-            className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+            className="field w-full"
           >
             {DOCUMENT_SERIES_TYPES.map((t) => (
               <option key={t.value} value={t.value}>
@@ -206,7 +206,7 @@ function SeriesFormModal({
             onChange={(e) => setCode(e.target.value.toUpperCase())}
             placeholder="B001"
             required
-            className="w-full rounded-md border border-slate-300 px-3 py-2 font-mono text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+            className="field w-full font-mono"
           />
           {errors.series && <p className="mt-1 text-sm text-red-600">{errors.series[0]}</p>}
         </div>
@@ -215,7 +215,7 @@ function SeriesFormModal({
           <select
             value={cashRegisterId}
             onChange={(e) => setCashRegisterId(e.target.value)}
-            className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+            className="field w-full"
           >
             <option value="">Sin asignar</option>
             {registers.map((r) => (
@@ -235,7 +235,7 @@ function SeriesFormModal({
               min="0"
               value={currentCorrelative}
               onChange={(e) => setCurrentCorrelative(e.target.value)}
-              className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+              className="field w-full"
             />
           </div>
         )}
@@ -253,14 +253,14 @@ function SeriesFormModal({
           <button
             type="button"
             onClick={onClose}
-            className="rounded-md border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50"
+            className="btn btn-secondary"
           >
             Cancelar
           </button>
           <button
             type="submit"
             disabled={isSubmitting}
-            className="rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700 disabled:opacity-60"
+            className="btn btn-primary"
           >
             {isSubmitting ? "Guardando..." : "Guardar"}
           </button>

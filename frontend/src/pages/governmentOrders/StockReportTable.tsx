@@ -82,7 +82,7 @@ export function StockReportTable({ report }: StockReportTableProps) {
                   {line.to_buy > 0 ? `S/ ${line.estimated_cost.toFixed(2)}` : "—"}
                 </td>
                 <td className="px-3 py-2 align-top">
-                  <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${STOCK_LINE_STATUS_STYLES[line.status]}`}>
+                  <span className={`pill ${STOCK_LINE_STATUS_STYLES[line.status]}`}>
                     {STOCK_LINE_STATUS_LABELS[line.status]}
                   </span>
                 </td>

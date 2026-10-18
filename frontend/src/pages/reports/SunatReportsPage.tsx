@@ -83,7 +83,7 @@ function PeriodSelector({
           <select
             value={filters.month}
             onChange={(e) => onChange({ ...filters, month: Number(e.target.value) })}
-            className="rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+            className="field"
           >
             {MONTHS.map((label, index) => (
               <option key={label} value={index + 1}>
@@ -94,7 +94,7 @@ function PeriodSelector({
           <select
             value={filters.year}
             onChange={(e) => onChange({ ...filters, year: Number(e.target.value) })}
-            className="rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+            className="field"
           >
             {years.map((year) => (
               <option key={year} value={year}>
@@ -109,14 +109,14 @@ function PeriodSelector({
             type="date"
             value={filters.date_from ?? ""}
             onChange={(e) => onChange({ ...filters, date_from: e.target.value })}
-            className="rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+            className="field"
           />
           <span className="text-sm text-slate-400">a</span>
           <input
             type="date"
             value={filters.date_to ?? ""}
             onChange={(e) => onChange({ ...filters, date_to: e.target.value })}
-            className="rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+            className="field"
           />
         </div>
       )}
@@ -231,7 +231,7 @@ export default function SunatReportsPage() {
             type="button"
             onClick={() => handleExport("txt")}
             disabled={exportingFormat !== null}
-            className="rounded-md bg-slate-800 px-4 py-2 text-sm font-medium text-white hover:bg-slate-900 disabled:cursor-not-allowed disabled:opacity-60"
+            className="btn bg-ink-800 text-white shadow-sm hover:bg-ink-900"
           >
             {exportingFormat === "txt" ? "Exportando..." : "Exportar TXT para SIRE/PLE"}
           </button>
@@ -239,7 +239,7 @@ export default function SunatReportsPage() {
             type="button"
             onClick={() => handleExport("csv")}
             disabled={exportingFormat !== null}
-            className="rounded-md bg-emerald-600 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-700 disabled:cursor-not-allowed disabled:opacity-60"
+            className="btn btn-success"
           >
             {exportingFormat === "csv" ? "Exportando..." : "Exportar a Excel (.csv)"}
           </button>
@@ -261,10 +261,10 @@ export default function SunatReportsPage() {
         ))}
       </div>
 
-      <div className="mt-4 overflow-x-auto rounded-xl bg-white shadow-sm">
+      <div className="card mt-4 overflow-x-auto">
         {tab === "rvie" && (
           <table className="w-full text-left text-sm">
-            <thead className="border-b border-slate-200 text-slate-500">
+            <thead className="border-b border-slate-200 bg-slate-50 text-xs tracking-wide text-slate-500 uppercase">
               <tr>
                 <th className="px-4 py-3 font-medium">CAR</th>
                 <th className="px-4 py-3 font-medium">Fecha Emisión</th>
@@ -314,7 +314,7 @@ export default function SunatReportsPage() {
 
         {tab === "rice" && (
           <table className="w-full text-left text-sm">
-            <thead className="border-b border-slate-200 text-slate-500">
+            <thead className="border-b border-slate-200 bg-slate-50 text-xs tracking-wide text-slate-500 uppercase">
               <tr>
                 <th className="px-4 py-3 font-medium">CAR</th>
                 <th className="px-4 py-3 font-medium">Fecha Emisión</th>
@@ -366,7 +366,7 @@ export default function SunatReportsPage() {
 
         {tab === "kardex13" && (
           <table className="w-full text-left text-sm">
-            <thead className="border-b border-slate-200 text-slate-500">
+            <thead className="border-b border-slate-200 bg-slate-50 text-xs tracking-wide text-slate-500 uppercase">
               <tr>
                 <th className="px-4 py-3 font-medium">Producto</th>
                 <th className="px-4 py-3 font-medium">Fecha</th>
@@ -400,7 +400,7 @@ export default function SunatReportsPage() {
                     <td className="px-4 py-3 text-slate-600">{new Date(row.date).toLocaleString("es-PE")}</td>
                     <td className="px-4 py-3">
                       <span
-                        className={`rounded-full px-2 py-0.5 text-xs font-medium ${
+                        className={`pill ${
                           row.type === "in" ? "bg-emerald-100 text-emerald-700" : "bg-red-100 text-red-700"
                         }`}
                       >
@@ -420,7 +420,7 @@ export default function SunatReportsPage() {
 
         {tab === "inventory12" && (
           <table className="w-full text-left text-sm">
-            <thead className="border-b border-slate-200 text-slate-500">
+            <thead className="border-b border-slate-200 bg-slate-50 text-xs tracking-wide text-slate-500 uppercase">
               <tr>
                 <th className="px-4 py-3 font-medium">Fecha</th>
                 <th className="px-4 py-3 font-medium">Almacén</th>
@@ -455,7 +455,7 @@ export default function SunatReportsPage() {
                     <td className="px-4 py-3 text-slate-600">{row.unit}</td>
                     <td className="px-4 py-3">
                       <span
-                        className={`rounded-full px-2 py-0.5 text-xs font-medium ${
+                        className={`pill ${
                           row.type === "in"
                             ? "bg-emerald-100 text-emerald-700"
                             : row.type === "out"
@@ -485,7 +485,7 @@ export default function SunatReportsPage() {
               type="button"
               disabled={meta.current_page <= 1}
               onClick={() => setPage(meta.current_page - 1)}
-              className="rounded-md border border-slate-300 px-3 py-1 disabled:cursor-not-allowed disabled:opacity-40"
+              className="btn-sm btn-secondary"
             >
               Anterior
             </button>
@@ -493,7 +493,7 @@ export default function SunatReportsPage() {
               type="button"
               disabled={meta.current_page >= meta.last_page}
               onClick={() => setPage(meta.current_page + 1)}
-              className="rounded-md border border-slate-300 px-3 py-1 disabled:cursor-not-allowed disabled:opacity-40"
+              className="btn-sm btn-secondary"
             >
               Siguiente
             </button>

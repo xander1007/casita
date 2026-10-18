@@ -23,8 +23,7 @@ function todayIso(): string {
   return new Date(now.getTime() - now.getTimezoneOffset() * 60000).toISOString().slice(0, 10);
 }
 
-const inputClass =
-  "w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500";
+const inputClass = "field w-full";
 
 export default function GovernmentOrderFormPage() {
   const navigate = useNavigate();
@@ -163,14 +162,14 @@ export default function GovernmentOrderFormPage() {
       {formError && <div className="mt-4 rounded-md bg-red-50 px-3 py-2 text-sm text-red-700">{formError}</div>}
 
       <form onSubmit={handleSubmit} noValidate className="mt-4 space-y-6">
-        <section className="rounded-xl bg-white p-5 shadow-sm">
+        <section className="card p-5">
           <h2 className="text-base font-semibold text-slate-900">Datos de la orden</h2>
 
           <div className="mt-4 grid gap-4 sm:grid-cols-2">
             <div>
               <label className="mb-1 block text-sm font-medium text-slate-700">Entidad del Estado</label>
               {entity ? (
-                <div className="flex items-center justify-between rounded-md border border-slate-300 px-3 py-2 text-sm">
+                <div className="field flex items-center justify-between">
                   <span>
                     {entity.name_or_business_name}{" "}
                     <span className="text-xs text-slate-400">({entity.document_number})</span>
@@ -273,7 +272,7 @@ export default function GovernmentOrderFormPage() {
           </div>
         </section>
 
-        <section className="rounded-xl bg-white p-5 shadow-sm">
+        <section className="card p-5">
           <h2 className="text-base font-semibold text-slate-900">Ítems solicitados</h2>
 
           <div className="relative mt-3">
@@ -339,7 +338,7 @@ export default function GovernmentOrderFormPage() {
                         min={1}
                         value={item.quantity}
                         onChange={(e) => updateLine(item.product.id, { quantity: Math.max(1, Number(e.target.value)) })}
-                        className="w-24 rounded-md border border-slate-300 px-2 py-1 text-sm"
+                        className="field-sm w-24"
                       />
                     </td>
                     <td className="px-3 py-2">
@@ -349,7 +348,7 @@ export default function GovernmentOrderFormPage() {
                         step="0.01"
                         value={item.unitPrice}
                         onChange={(e) => updateLine(item.product.id, { unitPrice: Math.max(0, Number(e.target.value)) })}
-                        className="w-28 rounded-md border border-slate-300 px-2 py-1 text-sm"
+                        className="field-sm w-28"
                       />
                     </td>
                     <td className="px-3 py-2 text-right font-medium text-slate-900">
@@ -377,14 +376,14 @@ export default function GovernmentOrderFormPage() {
               <button
                 type="button"
                 onClick={() => navigate("/government-orders")}
-                className="rounded-md border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50"
+                className="btn btn-secondary"
               >
                 Cancelar
               </button>
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="rounded-md bg-indigo-600 px-6 py-2 text-sm font-semibold text-white hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-60"
+                className="btn btn-primary"
               >
                 {isSubmitting ? "Guardando..." : "Registrar y ver reporte de stock"}
               </button>

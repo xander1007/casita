@@ -87,7 +87,7 @@ export function SalesLinesEditor({ lines, onChange, warehouseId, mode, error }: 
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder="Buscar producto por nombre, código o código de barras..."
-          className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+          className="field w-full"
         />
         {results.length > 0 && (
           <div className="absolute z-10 mt-1 max-h-56 w-full overflow-y-auto rounded-md border border-slate-200 bg-white shadow-lg">
@@ -148,7 +148,7 @@ export function SalesLinesEditor({ lines, onChange, warehouseId, mode, error }: 
                     min={1}
                     value={line.quantity}
                     onChange={(e) => updateLine(line.product.id, { quantity: Math.max(1, Number(e.target.value) || 1) })}
-                    className="w-20 rounded-md border border-slate-300 px-2 py-1 text-sm"
+                    className="field-sm w-20"
                   />
                 </td>
                 <td className="px-3 py-2 align-top">
@@ -158,7 +158,7 @@ export function SalesLinesEditor({ lines, onChange, warehouseId, mode, error }: 
                     step="0.01"
                     value={line.unitPrice}
                     onChange={(e) => updateLine(line.product.id, { unitPrice: Math.max(0, Number(e.target.value)) })}
-                    className="w-28 rounded-md border border-slate-300 px-2 py-1 text-sm"
+                    className="field-sm w-28"
                   />
                 </td>
                 <td className="px-3 py-2 text-right align-top font-medium text-slate-900">

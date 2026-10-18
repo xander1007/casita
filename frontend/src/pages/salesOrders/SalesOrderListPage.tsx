@@ -8,9 +8,10 @@ import { useAuth } from "../../context/useAuth";
 import { formatDate } from "../../utils/dates";
 import { SalesOrderDetailModal } from "./SalesOrderDetailModal";
 import { PurchaseSuggestionsPanel } from "./PurchaseSuggestionsPanel";
+import { EmptyTableRow } from "../../components/ui/EmptyState";
+import { ClipboardList } from "lucide-react";
 
-const inputClass =
-  "rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500";
+const inputClass = "field";
 
 export default function SalesOrderListPage() {
   const { hasPermission } = useAuth();
@@ -78,7 +79,7 @@ export default function SalesOrderListPage() {
         {hasPermission("sales-orders.manage") && (
           <Link
             to="/sales-orders/nuevo"
-            className="rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700"
+            className="btn btn-primary"
           >
             Nuevo Pedido
           </Link>
@@ -128,9 +129,9 @@ export default function SalesOrderListPage() {
             </label>
           </div>
 
-          <div className="mt-4 overflow-x-auto rounded-xl bg-white shadow-sm">
+          <div className="card mt-4 overflow-x-auto">
             <table className="w-full text-left text-sm">
-              <thead className="border-b border-slate-200 text-slate-500">
+              <thead className="border-b border-slate-200 bg-slate-50 text-xs tracking-wide text-slate-500 uppercase">
                 <tr>
                   <th className="px-4 py-3 font-medium">Pedido</th>
                   <th className="px-4 py-3 font-medium">Cliente</th>
@@ -150,11 +151,7 @@ export default function SalesOrderListPage() {
                   </tr>
                 )}
                 {!isLoading && orders.length === 0 && (
-                  <tr>
-                    <td colSpan={7} className="px-4 py-6 text-center text-slate-400">
-                      No se encontraron pedidos.
-                    </td>
-                  </tr>
+                  <EmptyTableRow colSpan={7} icon={ClipboardList} title="Aún no hay pedidos" description="Registra un pedido para reservar stock a tu cliente o comprar a demanda." filtered={Object.values(filters).some(Boolean)} />
                 )}
                 {!isLoading &&
                   orders.map((order) => (
@@ -162,7 +159,7 @@ export default function SalesOrderListPage() {
                       <td className="px-4 py-3">
                         <div className="font-medium text-slate-900">{order.code}</div>
                         {order.has_on_demand && (
-                          <span className="rounded-full bg-amber-100 px-2 py-0.5 text-xs font-medium text-amber-700">
+                          <span className="pill bg-amber-100 text-amber-700">
                             A demanda
                           </span>
                         )}
@@ -175,7 +172,7 @@ export default function SalesOrderListPage() {
                       <td className="px-4 py-3 text-slate-600">{order.warehouse?.name ?? "-"}</td>
                       <td className="px-4 py-3 font-medium text-slate-900">S/ {order.total.toFixed(2)}</td>
                       <td className="px-4 py-3">
-                        <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${SALES_ORDER_STATUS_STYLES[order.status]}`}>
+                        <span className={`pill ${SALES_ORDER_STATUS_STYLES[order.status]}`}>
                           {SALES_ORDER_STATUS_LABELS[order.status]}
                         </span>
                       </td>
@@ -204,7 +201,7 @@ export default function SalesOrderListPage() {
                   type="button"
                   disabled={meta.current_page <= 1}
                   onClick={() => setPage(meta.current_page - 1)}
-                  className="rounded-md border border-slate-300 px-3 py-1 disabled:cursor-not-allowed disabled:opacity-40"
+                  className="btn-sm btn-secondary"
                 >
                   Anterior
                 </button>
@@ -212,7 +209,7 @@ export default function SalesOrderListPage() {
                   type="button"
                   disabled={meta.current_page >= meta.last_page}
                   onClick={() => setPage(meta.current_page + 1)}
-                  className="rounded-md border border-slate-300 px-3 py-1 disabled:cursor-not-allowed disabled:opacity-40"
+                  className="btn-sm btn-secondary"
                 >
                   Siguiente
                 </button>

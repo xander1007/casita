@@ -106,7 +106,7 @@ export default function RolesPage() {
 
   return (
     <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
-      <div className="rounded-xl bg-white p-4 shadow-sm md:col-span-1">
+      <div className="card p-4 md:col-span-1">
         <h2 className="mb-3 text-sm font-semibold text-slate-700">Roles</h2>
 
         <ul className="mb-4 space-y-1">
@@ -136,11 +136,11 @@ export default function RolesPage() {
               onChange={(e) => setNewRoleName(e.target.value)}
               placeholder="Nombre del rol"
               required
-              className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+              className="field w-full"
             />
             <button
               type="submit"
-              className="rounded-md bg-indigo-600 px-3 py-2 text-sm font-medium text-white hover:bg-indigo-700"
+              className="btn btn-primary"
             >
               +
             </button>
@@ -148,7 +148,7 @@ export default function RolesPage() {
         )}
       </div>
 
-      <div className="rounded-xl bg-white p-6 shadow-sm md:col-span-2">
+      <div className="card p-6 md:col-span-2">
         {!selectedRole && (
           <p className="text-sm text-slate-400">Selecciona un rol para ver sus permisos.</p>
         )}
@@ -167,7 +167,7 @@ export default function RolesPage() {
                   value={roleName}
                   onChange={(e) => setRoleName(e.target.value)}
                   disabled={!canUpdate || PROTECTED_ROLES.includes(selectedRole.name)}
-                  className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 disabled:bg-slate-100"
+                  className="field w-full disabled:bg-slate-100"
                 />
               </div>
               {canDelete && !PROTECTED_ROLES.includes(selectedRole.name) && (
@@ -221,7 +221,7 @@ export default function RolesPage() {
                   type="button"
                   onClick={handleSaveRole}
                   disabled={isSaving}
-                  className="rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-60"
+                  className="btn btn-primary"
                 >
                   {isSaving ? "Guardando..." : "Guardar cambios"}
                 </button>

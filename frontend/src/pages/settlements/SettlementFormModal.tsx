@@ -22,8 +22,7 @@ function todayIso(): string {
   return new Date(now.getTime() - now.getTimezoneOffset() * 60000).toISOString().slice(0, 10);
 }
 
-const inputClass =
-  "w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500";
+const inputClass = "field w-full";
 
 function FieldError({ messages }: { messages?: string[] }) {
   return messages ? <p className="mt-1 text-sm text-red-600">{messages[0]}</p> : null;
@@ -115,7 +114,7 @@ export function SettlementFormModal({ onClose, onCreated }: SettlementFormModalP
             <div className="sm:col-span-2">
               <label className="mb-1 block text-sm font-medium text-slate-700">Cliente / Proveedor</label>
               {contact ? (
-                <div className="flex items-center justify-between rounded-md border border-slate-300 px-3 py-2 text-sm">
+                <div className="field flex items-center justify-between">
                   <span>
                     {contact.name_or_business_name}{" "}
                     <span className="text-xs text-slate-400">({contact.document_number})</span>
@@ -194,7 +193,7 @@ export function SettlementFormModal({ onClose, onCreated }: SettlementFormModalP
                 <select
                   value={currency}
                   onChange={(e) => setCurrency(e.target.value as SettlementCurrency)}
-                  className="rounded-md border border-slate-300 px-2 py-2 text-sm"
+                  className="field px-2"
                 >
                   <option value="PEN">S/</option>
                   <option value="USD">US$</option>
@@ -287,14 +286,14 @@ export function SettlementFormModal({ onClose, onCreated }: SettlementFormModalP
           <button
             type="button"
             onClick={onClose}
-            className="rounded-md border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50"
+            className="btn btn-secondary"
           >
             Cancelar
           </button>
           <button
             type="submit"
             disabled={isSubmitting}
-            className="rounded-md bg-indigo-600 px-6 py-2 text-sm font-semibold text-white hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-60"
+            className="btn btn-primary"
           >
             {isSubmitting ? "Guardando..." : "Registrar cancelación"}
           </button>

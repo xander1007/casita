@@ -84,7 +84,7 @@ export function UserFormModal({ user, roles, onClose, onSaved }: UserFormModalPr
             value={name}
             onChange={(e) => setName(e.target.value)}
             required
-            className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+            className="field w-full"
           />
           {errors.name && <p className="mt-1 text-sm text-red-600">{errors.name[0]}</p>}
         </div>
@@ -96,7 +96,7 @@ export function UserFormModal({ user, roles, onClose, onSaved }: UserFormModalPr
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
-            className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+            className="field w-full"
           />
           {errors.email && <p className="mt-1 text-sm text-red-600">{errors.email[0]}</p>}
         </div>
@@ -112,7 +112,7 @@ export function UserFormModal({ user, roles, onClose, onSaved }: UserFormModalPr
               onChange={(e) => setPassword(e.target.value)}
               required={!isEditing}
               placeholder={isEditing ? "Dejar en blanco para no cambiar" : ""}
-              className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+              className="field w-full"
             />
             {errors.password && <p className="mt-1 text-sm text-red-600">{errors.password[0]}</p>}
           </div>
@@ -123,7 +123,7 @@ export function UserFormModal({ user, roles, onClose, onSaved }: UserFormModalPr
               value={passwordConfirmation}
               onChange={(e) => setPasswordConfirmation(e.target.value)}
               required={!isEditing || password !== ""}
-              className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+              className="field w-full"
             />
           </div>
         </div>
@@ -153,14 +153,14 @@ export function UserFormModal({ user, roles, onClose, onSaved }: UserFormModalPr
           <button
             type="button"
             onClick={onClose}
-            className="rounded-md border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50"
+            className="btn btn-secondary"
           >
             Cancelar
           </button>
           <button
             type="submit"
             disabled={isSubmitting}
-            className="rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-60"
+            className="btn btn-primary"
           >
             {isSubmitting ? "Guardando..." : "Guardar"}
           </button>

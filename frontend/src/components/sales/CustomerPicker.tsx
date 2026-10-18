@@ -33,7 +33,7 @@ export function CustomerPicker({ value, onChange, error }: CustomerPickerProps) 
     <div>
       <label className="mb-1 block text-sm font-medium text-slate-700">Cliente</label>
       {value ? (
-        <div className="flex items-center justify-between rounded-md border border-slate-300 px-3 py-2 text-sm">
+        <div className="field flex items-center justify-between">
           <span>
             {value.name_or_business_name} <span className="text-xs text-slate-400">({value.document_number})</span>
           </span>
@@ -48,7 +48,7 @@ export function CustomerPicker({ value, onChange, error }: CustomerPickerProps) 
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Buscar por RUC/DNI o razón social..."
-            className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+            className="field w-full"
           />
           {results.length > 0 && (
             <div className="mt-1 max-h-32 overflow-y-auto rounded-md border border-slate-200">

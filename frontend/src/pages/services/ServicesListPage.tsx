@@ -6,6 +6,8 @@ import type { PaginationMeta } from "../../types/common";
 import { useAuth } from "../../context/useAuth";
 import { ServiceReceptionModal } from "./ServiceReceptionModal";
 import { ServiceDetailModal } from "./ServiceDetailModal";
+import { EmptyTableRow } from "../../components/ui/EmptyState";
+import { Wrench } from "lucide-react";
 
 const KANBAN_STATUSES: { value: ServiceStatus; label: string }[] = [
   { value: "received", label: "Recibido" },
@@ -89,7 +91,7 @@ export default function ServicesListPage() {
           <button
             type="button"
             onClick={() => setShowReception(true)}
-            className="rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700"
+            className="btn btn-primary"
           >
             + Nueva recepción
           </button>
@@ -102,7 +104,7 @@ export default function ServicesListPage() {
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder="Buscar por código, cliente o serie..."
-          className="w-64 rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+          className="field w-64"
         />
         {view === "table" && (
           <select
@@ -111,7 +113,7 @@ export default function ServicesListPage() {
               setPage(1);
               setStatus(e.target.value as ServiceStatus | "");
             }}
-            className="rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+            className="field"
           >
             <option value="">Todos los estados</option>
             {SERVICE_STATUSES.map((s) => (
@@ -181,9 +183,9 @@ export default function ServicesListPage() {
       )}
 
       {!isLoading && view === "table" && (
-        <div className="mt-4 overflow-x-auto rounded-xl bg-white shadow-sm">
+        <div className="card mt-4 overflow-x-auto">
           <table className="w-full text-left text-sm">
-            <thead className="border-b border-slate-200 text-slate-500">
+            <thead className="border-b border-slate-200 bg-slate-50 text-xs tracking-wide text-slate-500 uppercase">
               <tr>
                 <th className="px-4 py-3 font-medium">Código</th>
                 <th className="px-4 py-3 font-medium">Cliente</th>
@@ -195,11 +197,7 @@ export default function ServicesListPage() {
             </thead>
             <tbody className="divide-y divide-slate-100">
               {services.length === 0 && (
-                <tr>
-                  <td colSpan={6} className="px-4 py-6 text-center text-slate-400">
-                    No se encontraron órdenes de servicio.
-                  </td>
-                </tr>
+                <EmptyTableRow colSpan={6} icon={Wrench} title="No hay órdenes de servicio" description="Registra la recepción de un equipo para iniciar su seguimiento." filtered={Boolean(search)} />
               )}
               {services.map((s) => (
                 <tr key={s.id}>
@@ -210,7 +208,7 @@ export default function ServicesListPage() {
                     {s.serial_number && <div className="text-xs text-slate-400">S/N: {s.serial_number}</div>}
                   </td>
                   <td className="px-4 py-3">
-                    <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${STATUS_BADGE_CLASSES[s.status]}`}>
+                    <span className={`pill ${STATUS_BADGE_CLASSES[s.status]}`}>
                       {s.status_label}
                     </span>
                   </td>
@@ -243,7 +241,7 @@ export default function ServicesListPage() {
               type="button"
               disabled={meta.current_page <= 1}
               onClick={() => setPage(meta.current_page - 1)}
-              className="rounded-md border border-slate-300 px-3 py-1 disabled:cursor-not-allowed disabled:opacity-40"
+              className="btn-sm btn-secondary"
             >
               Anterior
             </button>
@@ -251,7 +249,7 @@ export default function ServicesListPage() {
               type="button"
               disabled={meta.current_page >= meta.last_page}
               onClick={() => setPage(meta.current_page + 1)}
-              className="rounded-md border border-slate-300 px-3 py-1 disabled:cursor-not-allowed disabled:opacity-40"
+              className="btn-sm btn-secondary"
             >
               Siguiente
             </button>

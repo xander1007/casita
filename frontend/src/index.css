@@ -1,5 +1,163 @@
 @import "tailwindcss";
 
+/* Dark mode is driven by the "dark" class on <html> (see theme/ThemeProvider). */
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --font-sans: "Inter", "Segoe UI", ui-sans-serif, system-ui, -apple-system, Roboto, "Helvetica Neue", Arial, sans-serif;
+
+  /* Fixed neutral scale for chrome that must not flip with the theme (sidebar, POS checkout bar). */
+  --color-ink-50: #f8fafc;
+  --color-ink-100: #f1f5f9;
+  --color-ink-200: #e2e8f0;
+  --color-ink-300: #cbd5e1;
+  --color-ink-400: #94a3b8;
+  --color-ink-500: #64748b;
+  --color-ink-600: #475569;
+  --color-ink-700: #334155;
+  --color-ink-800: #1e293b;
+  --color-ink-850: #172033;
+  --color-ink-900: #0f172a;
+  --color-ink-950: #020617;
+}
+
+/* ---------- Design system primitives ---------- */
+
+/* Text inputs, selects, date pickers and textareas share one height and look. */
+@utility field {
+  min-height: 2.5rem;
+  @apply rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 shadow-xs transition-colors placeholder:text-slate-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 focus:outline-none disabled:cursor-not-allowed disabled:bg-slate-50 disabled:text-slate-500;
+}
+
+/* Compact variant for inputs inside table rows (quantities, prices). */
+@utility field-sm {
+  min-height: 2rem;
+  @apply rounded-md border border-slate-300 bg-white px-2 py-1 text-sm text-slate-900 transition-colors focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 focus:outline-none disabled:bg-slate-50;
+}
+
+@utility btn {
+  min-height: 2.5rem;
+  @apply inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2 text-sm font-medium whitespace-nowrap transition-colors focus-visible:ring-2 focus-visible:ring-indigo-500/40 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-60;
+}
+
+@utility btn-sm {
+  min-height: 2rem;
+  @apply inline-flex items-center justify-center gap-1.5 rounded-md px-3 py-1 text-xs font-medium whitespace-nowrap transition-colors disabled:cursor-not-allowed disabled:opacity-40;
+}
+
+@utility btn-primary {
+  @apply bg-indigo-600 text-white shadow-sm hover:bg-indigo-700;
+}
+
+@utility btn-secondary {
+  @apply border border-slate-300 bg-white text-slate-700 shadow-xs hover:bg-slate-50;
+}
+
+@utility btn-danger {
+  @apply bg-red-600 text-white shadow-sm hover:bg-red-700;
+}
+
+@utility btn-success {
+  @apply bg-emerald-600 text-white shadow-sm hover:bg-emerald-700;
+}
+
+/* Rounded status badge; its color comes from the bg and text classes next to it. */
+@utility pill {
+  @apply inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-medium whitespace-nowrap ring-1 ring-current/15 ring-inset;
+}
+
+@utility card {
+  @apply rounded-xl border border-slate-200 bg-white shadow-sm;
+}
+
+/* List tables inside cards: soft row hover (skips the single-cell empty/loading rows). */
+.card > table > tbody > tr:not(:has(> td[colspan])) {
+  transition: background-color 120ms;
+}
+.card > table > tbody > tr:not(:has(> td[colspan])):hover {
+  background-color: color-mix(in oklab, var(--color-slate-50) 80%, transparent);
+}
+
+/* ---------- Dark theme ----------
+   Screens are written with the slate scale on white surfaces. In dark mode the
+   slate scale is inverted and light tints become translucent, so every screen
+   follows without per-component dark: variants. */
+.dark {
+  color-scheme: dark;
+
+  --color-slate-50: #182133;
+  --color-slate-100: #1e293b;
+  --color-slate-200: #2a3850;
+  --color-slate-300: #3a4a63;
+  --color-slate-400: #74839b;
+  --color-slate-500: #94a3b8;
+  --color-slate-600: #cbd5e1;
+  --color-slate-700: #e2e8f0;
+  --color-slate-800: #f1f5f9;
+  --color-slate-900: #f8fafc;
+
+  --color-indigo-50: color-mix(in oklab, #6366f1 14%, transparent);
+  --color-indigo-100: color-mix(in oklab, #6366f1 22%, transparent);
+  --color-emerald-50: color-mix(in oklab, #10b981 13%, transparent);
+  --color-emerald-100: color-mix(in oklab, #10b981 20%, transparent);
+  --color-red-50: color-mix(in oklab, #ef4444 13%, transparent);
+  --color-red-100: color-mix(in oklab, #ef4444 20%, transparent);
+  --color-amber-50: color-mix(in oklab, #f59e0b 13%, transparent);
+  --color-amber-100: color-mix(in oklab, #f59e0b 20%, transparent);
+  --color-purple-50: color-mix(in oklab, #a855f7 13%, transparent);
+  --color-purple-100: color-mix(in oklab, #a855f7 22%, transparent);
+  --color-sky-50: color-mix(in oklab, #0ea5e9 13%, transparent);
+  --color-sky-100: color-mix(in oklab, #0ea5e9 20%, transparent);
+  --color-blue-50: color-mix(in oklab, #3b82f6 13%, transparent);
+  --color-blue-100: color-mix(in oklab, #3b82f6 20%, transparent);
+  --color-rose-50: color-mix(in oklab, #f43f5e 13%, transparent);
+  --color-rose-100: color-mix(in oklab, #f43f5e 20%, transparent);
+  --color-orange-50: color-mix(in oklab, #f97316 13%, transparent);
+  --color-orange-100: color-mix(in oklab, #f97316 20%, transparent);
+}
+
+/* Surfaces: white cards become the dark surface (print previews keep their paper). */
+.dark .bg-white:not(.print-root .bg-white, .print-root.bg-white),
+.dark :is(.card, .field, .field-sm, .btn-secondary) {
+  background-color: var(--color-ink-900);
+}
+.dark .btn-secondary:hover {
+  background-color: var(--color-slate-50);
+}
+.dark .hover\:bg-white:hover {
+  background-color: var(--color-ink-850);
+}
+
+/* Dark text on tinted backgrounds turns into a light tint of the same hue. */
+.dark :is(.text-indigo-600, .text-indigo-700, .text-indigo-800) { color: #a5b4fc; }
+.dark :is(.text-emerald-600, .text-emerald-700, .text-emerald-800) { color: #6ee7b7; }
+.dark :is(.text-red-600, .text-red-700, .text-red-800) { color: #fca5a5; }
+.dark :is(.text-amber-600, .text-amber-700, .text-amber-800) { color: #fcd34d; }
+.dark :is(.text-purple-600, .text-purple-700, .text-purple-800) { color: #d8b4fe; }
+.dark :is(.text-sky-600, .text-sky-700, .text-sky-800) { color: #7dd3fc; }
+.dark :is(.text-blue-600, .text-blue-700, .text-blue-800) { color: #93c5fd; }
+.dark :is(.text-rose-600, .text-rose-700, .text-rose-800) { color: #fda4af; }
+.dark :is(.text-orange-600, .text-orange-700, .text-orange-800) { color: #fdba74; }
+
+/* Print previews always render on light paper. */
+.dark .print-root {
+  color-scheme: light;
+  --color-slate-50: #f8fafc;
+  --color-slate-100: #f1f5f9;
+  --color-slate-200: #e2e8f0;
+  --color-slate-300: #cbd5e1;
+  --color-slate-400: #94a3b8;
+  --color-slate-500: #64748b;
+  --color-slate-600: #475569;
+  --color-slate-700: #334155;
+  --color-slate-800: #1e293b;
+  --color-slate-900: #0f172a;
+  background-color: #fff;
+  color: #0f172a;
+}
+
+/* ---------- Print ---------- */
+
 @media print {
   body * {
     visibility: hidden;

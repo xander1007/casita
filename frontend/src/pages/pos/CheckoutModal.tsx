@@ -138,7 +138,7 @@ export function CheckoutModal({
         <div>
           <span className="mb-1 block text-sm font-medium text-slate-700">Cliente</span>
           {contact ? (
-            <div className="flex items-center justify-between rounded-md border border-slate-300 px-3 py-2 text-sm">
+            <div className="field flex items-center justify-between">
               <span>
                 {contact.name_or_business_name}{" "}
                 <span className="text-xs text-slate-400">({contact.document_number})</span>
@@ -163,12 +163,12 @@ export function CheckoutModal({
                   value={contactSearch}
                   onChange={(e) => setContactSearch(e.target.value)}
                   placeholder="Clientes Varios (buscar por nombre o documento)"
-                  className="flex-1 rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                  className="field flex-1"
                 />
                 <button
                   type="button"
                   onClick={() => setShowQuickClient(true)}
-                  className="rounded-md border border-slate-300 px-3 py-2 text-xs font-medium text-slate-700 hover:bg-slate-50"
+                  className="btn btn-secondary"
                 >
                   + Nuevo
                 </button>
@@ -246,7 +246,7 @@ export function CheckoutModal({
                 <select
                   value={row.payment_method}
                   onChange={(e) => updatePaymentRow(index, { payment_method: e.target.value as PaymentMethod })}
-                  className="rounded-md border border-slate-300 px-2 py-1.5 text-sm"
+                  className="field-sm"
                 >
                   {PAYMENT_METHODS.map((m) => (
                     <option key={m.value} value={m.value}>
@@ -260,7 +260,7 @@ export function CheckoutModal({
                   min="0"
                   value={row.amount}
                   onChange={(e) => updatePaymentRow(index, { amount: e.target.value })}
-                  className="w-24 rounded-md border border-slate-300 px-2 py-1.5 text-sm"
+                  className="field-sm w-24"
                 />
                 {row.payment_method !== "cash" && (
                   <input
@@ -268,7 +268,7 @@ export function CheckoutModal({
                     value={row.reference_number}
                     onChange={(e) => updatePaymentRow(index, { reference_number: e.target.value })}
                     placeholder="N° de operación"
-                    className="flex-1 rounded-md border border-slate-300 px-2 py-1.5 text-sm"
+                    className="field-sm flex-1"
                   />
                 )}
                 {payments.length > 1 && (
@@ -306,7 +306,7 @@ export function CheckoutModal({
           <button
             type="button"
             onClick={onClose}
-            className="rounded-md border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50"
+            className="btn btn-secondary"
           >
             Cancelar
           </button>
@@ -314,7 +314,7 @@ export function CheckoutModal({
             type="button"
             disabled={isSubmitting}
             onClick={handleSubmit}
-            className="rounded-md bg-indigo-600 px-4 py-2 text-sm font-semibold text-white hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-60"
+            className="btn btn-primary"
           >
             {isSubmitting ? "Procesando..." : "Confirmar venta"}
           </button>

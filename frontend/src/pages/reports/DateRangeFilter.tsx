@@ -38,14 +38,14 @@ export function DateRangeFilter({ value, onChange }: DateRangeFilterProps) {
             type="date"
             value={value.date_from ?? ""}
             onChange={(e) => onChange({ ...value, date_from: e.target.value })}
-            className="rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+            className="field"
           />
           <span className="text-sm text-slate-400">a</span>
           <input
             type="date"
             value={value.date_to ?? ""}
             onChange={(e) => onChange({ ...value, date_to: e.target.value })}
-            className="rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+            className="field"
           />
         </div>
       )}

@@ -85,7 +85,7 @@ export function GovernmentOrderDetailModal({ data, onClose, onChanged }: Governm
         <div className="sm:text-right">
           <p className="text-slate-500">Monto de la OC</p>
           <p className="text-lg font-semibold text-slate-900">S/ {order.total.toFixed(2)}</p>
-          <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${GOVERNMENT_ORDER_STATUS_STYLES[order.status]}`}>
+          <span className={`pill ${GOVERNMENT_ORDER_STATUS_STYLES[order.status]}`}>
             {GOVERNMENT_ORDER_STATUS_LABELS[order.status]}
           </span>
         </div>
@@ -110,7 +110,7 @@ export function GovernmentOrderDetailModal({ data, onClose, onChanged }: Governm
 
       <h3 className="mt-5 text-base font-semibold text-slate-900">Ítems de la orden</h3>
       <table className="mt-2 w-full text-left text-sm">
-        <thead className="border-b border-slate-200 text-slate-500">
+        <thead className="border-b border-slate-200 bg-slate-50 text-xs tracking-wide text-slate-500 uppercase">
           <tr>
             <th className="py-2">Producto</th>
             <th className="py-2 text-right">Cant.</th>
@@ -139,7 +139,7 @@ export function GovernmentOrderDetailModal({ data, onClose, onChanged }: Governm
           <button
             type="button"
             onClick={() => setShowAnnulForm(true)}
-            className="rounded-md border border-red-300 px-4 py-2 text-sm font-medium text-red-600 hover:bg-red-50"
+            className="btn border border-red-300 bg-white text-red-600 hover:bg-red-50"
           >
             Anular orden
           </button>
@@ -147,7 +147,7 @@ export function GovernmentOrderDetailModal({ data, onClose, onChanged }: Governm
             type="button"
             disabled={isSubmitting}
             onClick={() => run(() => markGovernmentOrderDelivered(order.id), "No se pudo actualizar la orden.")}
-            className="rounded-md bg-emerald-600 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-700 disabled:opacity-60"
+            className="btn btn-success"
           >
             Marcar como entregada
           </button>
@@ -161,13 +161,13 @@ export function GovernmentOrderDetailModal({ data, onClose, onChanged }: Governm
             type="text"
             value={reason}
             onChange={(e) => setReason(e.target.value)}
-            className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-red-500 focus:outline-none focus:ring-1 focus:ring-red-500"
+            className="field w-full focus:border-red-500 focus:ring-red-500/20"
           />
           <div className="mt-3 flex justify-end gap-2">
             <button
               type="button"
               onClick={() => setShowAnnulForm(false)}
-              className="rounded-md border border-slate-300 px-4 py-2 text-sm text-slate-700 hover:bg-slate-50"
+              className="btn btn-secondary"
             >
               Cancelar
             </button>
@@ -175,7 +175,7 @@ export function GovernmentOrderDetailModal({ data, onClose, onChanged }: Governm
               type="button"
               disabled={isSubmitting || reason.trim() === ""}
               onClick={() => run(() => annulGovernmentOrder(order.id, reason), "No se pudo anular la orden.")}
-              className="rounded-md bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-700 disabled:opacity-60"
+              className="btn btn-danger"
             >
               Confirmar anulación
             </button>

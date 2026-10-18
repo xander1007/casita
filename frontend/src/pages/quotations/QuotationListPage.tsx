@@ -7,9 +7,10 @@ import type { PaginationMeta } from "../../types/common";
 import { useAuth } from "../../context/useAuth";
 import { formatDate } from "../../utils/dates";
 import { QuotationDetailModal } from "./QuotationDetailModal";
+import { EmptyTableRow } from "../../components/ui/EmptyState";
+import { FileText } from "lucide-react";
 
-const inputClass =
-  "rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500";
+const inputClass = "field";
 
 export default function QuotationListPage() {
   const { hasPermission } = useAuth();
@@ -71,7 +72,7 @@ export default function QuotationListPage() {
         {hasPermission("quotations.manage") && (
           <Link
             to="/quotations/nueva"
-            className="rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700"
+            className="btn btn-primary"
           >
             Nueva Cotización
           </Link>
@@ -98,9 +99,9 @@ export default function QuotationListPage() {
         <input type="date" value={filters.date_to} onChange={(e) => applyFilter("date_to", e.target.value)} className={inputClass} />
       </div>
 
-      <div className="mt-4 overflow-x-auto rounded-xl bg-white shadow-sm">
+      <div className="card mt-4 overflow-x-auto">
         <table className="w-full text-left text-sm">
-          <thead className="border-b border-slate-200 text-slate-500">
+          <thead className="border-b border-slate-200 bg-slate-50 text-xs tracking-wide text-slate-500 uppercase">
             <tr>
               <th className="px-4 py-3 font-medium">Código</th>
               <th className="px-4 py-3 font-medium">Cliente</th>
@@ -120,11 +121,7 @@ export default function QuotationListPage() {
               </tr>
             )}
             {!isLoading && quotations.length === 0 && (
-              <tr>
-                <td colSpan={7} className="px-4 py-6 text-center text-slate-400">
-                  No se encontraron cotizaciones.
-                </td>
-              </tr>
+              <EmptyTableRow colSpan={7} icon={FileText} title="Aún no hay cotizaciones" description="Crea una proforma para tu cliente y conviértela en pedido o venta con un clic." filtered={Object.values(filters).some(Boolean)} />
             )}
             {!isLoading &&
               quotations.map((quotation) => (
@@ -138,7 +135,7 @@ export default function QuotationListPage() {
                   </td>
                   <td className="px-4 py-3 font-medium text-slate-900">S/ {quotation.total.toFixed(2)}</td>
                   <td className="px-4 py-3">
-                    <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${QUOTATION_STATUS_STYLES[quotation.status]}`}>
+                    <span className={`pill ${QUOTATION_STATUS_STYLES[quotation.status]}`}>
                       {QUOTATION_STATUS_LABELS[quotation.status]}
                     </span>
                   </td>
@@ -167,7 +164,7 @@ export default function QuotationListPage() {
               type="button"
               disabled={meta.current_page <= 1}
               onClick={() => setPage(meta.current_page - 1)}
-              className="rounded-md border border-slate-300 px-3 py-1 disabled:cursor-not-allowed disabled:opacity-40"
+              className="btn-sm btn-secondary"
             >
               Anterior
             </button>
@@ -175,7 +172,7 @@ export default function QuotationListPage() {
               type="button"
               disabled={meta.current_page >= meta.last_page}
               onClick={() => setPage(meta.current_page + 1)}
-              className="rounded-md border border-slate-300 px-3 py-1 disabled:cursor-not-allowed disabled:opacity-40"
+              className="btn-sm btn-secondary"
             >
               Siguiente
             </button>

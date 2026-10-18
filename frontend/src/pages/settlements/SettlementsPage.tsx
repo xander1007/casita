@@ -11,9 +11,10 @@ import {
 import { useAuth } from "../../context/useAuth";
 import { Modal } from "../../components/Modal";
 import { SettlementFormModal } from "./SettlementFormModal";
+import { EmptyTableRow } from "../../components/ui/EmptyState";
+import { BadgeCheck } from "lucide-react";
 
-const inputClass =
-  "rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500";
+const inputClass = "field";
 
 function AnnulSettlementModal({
   settlement,
@@ -59,14 +60,14 @@ function AnnulSettlementModal({
         type="text"
         value={reason}
         onChange={(e) => setReason(e.target.value)}
-        className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-red-500 focus:outline-none focus:ring-1 focus:ring-red-500"
+        className="field w-full focus:border-red-500 focus:ring-red-500/20"
       />
       {error && <div className="mt-3 rounded-md bg-red-50 px-3 py-2 text-sm text-red-700">{error}</div>}
       <div className="mt-4 flex justify-end gap-2">
         <button
           type="button"
           onClick={onClose}
-          className="rounded-md border border-slate-300 px-4 py-2 text-sm text-slate-700 hover:bg-slate-50"
+          className="btn btn-secondary"
         >
           Cancelar
         </button>
@@ -74,7 +75,7 @@ function AnnulSettlementModal({
           type="button"
           disabled={isSubmitting || reason.trim() === ""}
           onClick={handleAnnul}
-          className="rounded-md bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-700 disabled:opacity-60"
+          className="btn btn-danger"
         >
           Confirmar anulación
         </button>
@@ -142,7 +143,7 @@ export default function SettlementsPage() {
           <button
             type="button"
             onClick={() => setShowForm(true)}
-            className="rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700"
+            className="btn btn-primary"
           >
             Registrar cancelación
           </button>
@@ -182,9 +183,9 @@ export default function SettlementsPage() {
         <input type="date" value={filters.date_to} onChange={(e) => applyFilter("date_to", e.target.value)} className={inputClass} />
       </div>
 
-      <div className="mt-4 overflow-x-auto rounded-xl bg-white shadow-sm">
+      <div className="card mt-4 overflow-x-auto">
         <table className="w-full text-left text-sm">
-          <thead className="border-b border-slate-200 text-slate-500">
+          <thead className="border-b border-slate-200 bg-slate-50 text-xs tracking-wide text-slate-500 uppercase">
             <tr>
               <th className="px-4 py-3 font-medium">Comprobante</th>
               <th className="px-4 py-3 font-medium">Cliente / Proveedor</th>
@@ -205,11 +206,7 @@ export default function SettlementsPage() {
               </tr>
             )}
             {!isLoading && settlements.length === 0 && (
-              <tr>
-                <td colSpan={8} className="px-4 py-6 text-center text-slate-400">
-                  No se encontraron cancelaciones.
-                </td>
-              </tr>
+              <EmptyTableRow colSpan={8} icon={BadgeCheck} title="Aún no hay cancelaciones" description="Registra el pago de facturas, notas de crédito y letras con su operación bancaria." filtered={Object.values(filters).some(Boolean)} />
             )}
             {!isLoading &&
               settlements.map((s) => (
@@ -239,7 +236,7 @@ export default function SettlementsPage() {
                   <td className="px-4 py-3">
                     <span
                       title={s.annulment_reason ?? undefined}
-                      className={`rounded-full px-2 py-0.5 text-xs font-medium ${
+                      className={`pill ${
                         s.status === "annulled" ? "bg-red-100 text-red-700" : "bg-emerald-100 text-emerald-700"
                       }`}
                     >
@@ -273,7 +270,7 @@ export default function SettlementsPage() {
               type="button"
               disabled={meta.current_page <= 1}
               onClick={() => setPage(meta.current_page - 1)}
-              className="rounded-md border border-slate-300 px-3 py-1 disabled:cursor-not-allowed disabled:opacity-40"
+              className="btn-sm btn-secondary"
             >
               Anterior
             </button>
@@ -281,7 +278,7 @@ export default function SettlementsPage() {
               type="button"
               disabled={meta.current_page >= meta.last_page}
               onClick={() => setPage(meta.current_page + 1)}
-              className="rounded-md border border-slate-300 px-3 py-1 disabled:cursor-not-allowed disabled:opacity-40"
+              className="btn-sm btn-secondary"
             >
               Siguiente
             </button>

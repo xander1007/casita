@@ -287,14 +287,14 @@ export default function PurchaseFormPage() {
       )}
 
       <form onSubmit={handleSubmit} noValidate className="mt-4 space-y-6">
-        <section className="rounded-xl bg-white p-5 shadow-sm">
+        <section className="card p-5">
           <h2 className="text-base font-semibold text-slate-900">Datos del comprobante</h2>
 
           <div className="mt-4 grid gap-4 sm:grid-cols-2">
             <div>
               <label className="mb-1 block text-sm font-medium text-slate-700">Proveedor</label>
               {supplier ? (
-                <div className="flex items-center justify-between rounded-md border border-slate-300 px-3 py-2 text-sm">
+                <div className="field flex items-center justify-between">
                   <span>
                     {supplier.name_or_business_name}{" "}
                     <span className="text-xs text-slate-400">({supplier.document_number})</span>
@@ -315,12 +315,12 @@ export default function PurchaseFormPage() {
                       value={supplierSearch}
                       onChange={(e) => setSupplierSearch(e.target.value)}
                       placeholder="Buscar por RUC/DNI o razón social..."
-                      className="flex-1 rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                      className="field flex-1"
                     />
                     <button
                       type="button"
                       onClick={() => setShowQuickSupplier(true)}
-                      className="rounded-md border border-slate-300 px-3 py-2 text-xs font-medium text-slate-700 hover:bg-slate-50"
+                      className="btn btn-secondary"
                     >
                       + Nuevo
                     </button>
@@ -355,7 +355,7 @@ export default function PurchaseFormPage() {
                 value={warehouseId}
                 onChange={(e) => setWarehouseId(e.target.value)}
                 disabled={hasAllocations}
-                className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 disabled:bg-slate-50"
+                className="field w-full disabled:bg-slate-50"
               >
                 <option value="">Selecciona un almacén</option>
                 {warehouses.map((w) => (
@@ -408,7 +408,7 @@ export default function PurchaseFormPage() {
                   onChange={(e) => setDocumentNumber(e.target.value)}
                   placeholder="F001-1234"
                   required
-                  className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                  className="field w-full"
                 />
                 {errors.document_number && (
                   <p className="mt-1 text-sm text-red-600">{errors.document_number[0]}</p>
@@ -421,7 +421,7 @@ export default function PurchaseFormPage() {
                   value={purchaseDate}
                   onChange={(e) => setPurchaseDate(e.target.value)}
                   required
-                  className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                  className="field w-full"
                 />
                 {errors.purchase_date && (
                   <p className="mt-1 text-sm text-red-600">{errors.purchase_date[0]}</p>
@@ -431,7 +431,7 @@ export default function PurchaseFormPage() {
           </div>
         </section>
 
-        <section className="rounded-xl bg-white p-5 shadow-sm">
+        <section className="card p-5">
           <h2 className="text-base font-semibold text-slate-900">Productos</h2>
 
           <div className="relative mt-3">
@@ -440,7 +440,7 @@ export default function PurchaseFormPage() {
               value={productSearch}
               onChange={(e) => setProductSearch(e.target.value)}
               placeholder="Buscar por nombre, código o código de barras..."
-              className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+              className="field w-full"
             />
             {productResults.length > 0 && (
               <div className="absolute z-10 mt-1 max-h-56 w-full overflow-y-auto rounded-md border border-slate-200 bg-white shadow-lg">
@@ -454,7 +454,7 @@ export default function PurchaseFormPage() {
                     <span>
                       {product.name} <span className="text-xs text-slate-400">({product.internal_code})</span>
                       {product.requires_serial && (
-                        <span className="ml-2 rounded-full bg-purple-100 px-2 py-0.5 text-xs text-purple-700">
+                        <span className="pill ml-2 bg-purple-100 text-purple-700">
                           Serie
                         </span>
                       )}
@@ -531,7 +531,7 @@ export default function PurchaseFormPage() {
                         min={1}
                         value={item.quantity}
                         onChange={(e) => updateLine(item.key, { quantity: Math.max(1, Number(e.target.value)) })}
-                        className="w-20 rounded-md border border-slate-300 px-2 py-1 text-sm"
+                        className="field-sm w-20"
                       />
                     </td>
                     <td className="px-3 py-2 align-top">
@@ -541,7 +541,7 @@ export default function PurchaseFormPage() {
                         step="0.01"
                         value={item.unitCost}
                         onChange={(e) => updateLine(item.key, { unitCost: Math.max(0, Number(e.target.value)) })}
-                        className="w-28 rounded-md border border-slate-300 px-2 py-1 text-sm"
+                        className="field-sm w-28"
                       />
                     </td>
                     <td className="px-3 py-2 text-right align-top font-medium text-slate-900">
@@ -564,7 +564,7 @@ export default function PurchaseFormPage() {
           </div>
         </section>
 
-        <section className="rounded-xl bg-white p-5 shadow-sm">
+        <section className="card p-5">
           <h2 className="text-base font-semibold text-slate-900">Resumen</h2>
           <dl className="mt-3 space-y-1 text-sm">
             <div className="flex justify-between text-slate-500">
@@ -585,14 +585,14 @@ export default function PurchaseFormPage() {
             <button
               type="button"
               onClick={() => navigate("/purchases")}
-              className="rounded-md border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50"
+              className="btn btn-secondary"
             >
               Cancelar
             </button>
             <button
               type="submit"
               disabled={isSubmitting}
-              className="rounded-md bg-indigo-600 px-6 py-2 text-sm font-semibold text-white hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-60"
+              className="btn btn-primary"
             >
               {isSubmitting ? "Guardando..." : "Registrar Compra"}
             </button>

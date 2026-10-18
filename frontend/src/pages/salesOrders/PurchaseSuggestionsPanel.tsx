@@ -4,6 +4,8 @@ import { fetchPurchaseSuggestions } from "../../api/salesOrders";
 import type { PurchaseSuggestion } from "../../types/salesOrders";
 import { useAuth } from "../../context/useAuth";
 import { formatDate } from "../../utils/dates";
+import { EmptyState } from "../../components/ui/EmptyState";
+import { PackageCheck } from "lucide-react";
 
 /**
  * Lines sold "a demanda" that still have to be bought. Selected lines of one
@@ -41,9 +43,13 @@ export function PurchaseSuggestionsPanel() {
 
   if (suggestions.length === 0) {
     return (
-      <p className="rounded-xl bg-white px-4 py-8 text-center text-sm text-slate-400 shadow-sm">
-        No hay productos a demanda pendientes de compra.
-      </p>
+      <div className="card">
+        <EmptyState
+          icon={PackageCheck}
+          title="Nada pendiente de compra"
+          description="Todos los pedidos tienen su mercadería. Los productos vendidos a demanda aparecerán aquí."
+        />
+      </div>
     );
   }
 
@@ -58,7 +64,7 @@ export function PurchaseSuggestionsPanel() {
           type="button"
           disabled={!canCreatePurchase}
           onClick={() => navigate("/purchases/nueva", { state: { onDemand: selectedRows } })}
-          className="rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-50"
+          className="btn btn-primary"
         >
           Generar compra ({selectedRows.length})
         </button>
@@ -69,9 +75,9 @@ export function PurchaseSuggestionsPanel() {
         </p>
       )}
 
-      <div className="overflow-x-auto rounded-xl bg-white shadow-sm">
+      <div className="card overflow-x-auto">
         <table className="w-full text-left text-sm">
-          <thead className="border-b border-slate-200 text-slate-500">
+          <thead className="border-b border-slate-200 bg-slate-50 text-xs tracking-wide text-slate-500 uppercase">
             <tr>
               <th className="w-10 px-4 py-3"></th>
               <th className="px-4 py-3 font-medium">Producto</th>

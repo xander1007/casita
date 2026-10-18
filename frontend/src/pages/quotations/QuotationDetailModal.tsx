@@ -63,7 +63,7 @@ function ConvertToOrderForm({ quotation, onCancel }: { quotation: Quotation; onC
           <select
             value={warehouseId}
             onChange={(e) => setWarehouseId(e.target.value)}
-            className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
+            className="field w-full"
           >
             <option value="">Selecciona un almacén</option>
             {warehouses.map((w) => (
@@ -79,7 +79,7 @@ function ConvertToOrderForm({ quotation, onCancel }: { quotation: Quotation; onC
             type="date"
             value={expectedDate}
             onChange={(e) => setExpectedDate(e.target.value)}
-            className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
+            className="field w-full"
           />
         </div>
       </div>
@@ -88,7 +88,7 @@ function ConvertToOrderForm({ quotation, onCancel }: { quotation: Quotation; onC
         <button
           type="button"
           onClick={onCancel}
-          className="rounded-md border border-slate-300 px-4 py-2 text-sm text-slate-700 hover:bg-slate-50"
+          className="btn btn-secondary"
         >
           Cancelar
         </button>
@@ -96,7 +96,7 @@ function ConvertToOrderForm({ quotation, onCancel }: { quotation: Quotation; onC
           type="button"
           disabled={isSubmitting || !warehouseId}
           onClick={handleConvert}
-          className="rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700 disabled:opacity-60"
+          className="btn btn-primary"
         >
           {isSubmitting ? "Creando pedido..." : "Crear pedido"}
         </button>
@@ -160,14 +160,14 @@ export function QuotationDetailModal({ quotation, onClose, onChanged }: Quotatio
         <div className="sm:text-right">
           <p className="text-slate-500">Total</p>
           <p className="text-lg font-semibold text-slate-900">S/ {quotation.total.toFixed(2)}</p>
-          <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${QUOTATION_STATUS_STYLES[quotation.status]}`}>
+          <span className={`pill ${QUOTATION_STATUS_STYLES[quotation.status]}`}>
             {QUOTATION_STATUS_LABELS[quotation.status]}
           </span>
         </div>
       </div>
 
       <table className="mt-4 w-full text-left text-sm">
-        <thead className="border-b border-slate-200 text-slate-500">
+        <thead className="border-b border-slate-200 bg-slate-50 text-xs tracking-wide text-slate-500 uppercase">
           <tr>
             <th className="py-2">Producto</th>
             <th className="py-2 text-right">Cant.</th>
@@ -214,7 +214,7 @@ export function QuotationDetailModal({ quotation, onClose, onChanged }: Quotatio
           <button
             type="button"
             onClick={() => setShowPrint(true)}
-            className="rounded-md border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50"
+            className="btn btn-secondary"
           >
             Imprimir proforma
           </button>
@@ -223,7 +223,7 @@ export function QuotationDetailModal({ quotation, onClose, onChanged }: Quotatio
             <button
               type="button"
               onClick={() => navigate(`/quotations/${quotation.id}/editar`)}
-              className="rounded-md border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50"
+              className="btn btn-secondary"
             >
               Editar
             </button>
@@ -234,7 +234,7 @@ export function QuotationDetailModal({ quotation, onClose, onChanged }: Quotatio
               type="button"
               disabled={isSubmitting}
               onClick={() => run(() => rejectQuotation(quotation.id), "No se pudo rechazar la cotización.")}
-              className="rounded-md border border-red-300 px-4 py-2 text-sm font-medium text-red-600 hover:bg-red-50 disabled:opacity-60"
+              className="btn border border-red-300 bg-white text-red-600 hover:bg-red-50"
             >
               Rechazar
             </button>
@@ -245,7 +245,7 @@ export function QuotationDetailModal({ quotation, onClose, onChanged }: Quotatio
               type="button"
               disabled={isSubmitting}
               onClick={() => run(() => approveQuotation(quotation.id), "No se pudo aprobar la cotización.")}
-              className="rounded-md bg-emerald-600 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-700 disabled:opacity-60"
+              className="btn btn-success"
             >
               Aprobar
             </button>
@@ -265,7 +265,7 @@ export function QuotationDetailModal({ quotation, onClose, onChanged }: Quotatio
             <button
               type="button"
               onClick={() => navigate("/pos", { state: { quotationId: quotation.id } })}
-              className="rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700"
+              className="btn btn-primary"
             >
               Facturar en POS
             </button>

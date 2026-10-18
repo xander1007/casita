@@ -6,6 +6,8 @@ import { PURCHASE_DOCUMENT_TYPE_LABELS } from "../../types/purchases";
 import type { PaginationMeta } from "../../types/common";
 import { useAuth } from "../../context/useAuth";
 import { PurchaseDetailModal } from "./PurchaseDetailModal";
+import { EmptyTableRow } from "../../components/ui/EmptyState";
+import { ShoppingBag } from "lucide-react";
 
 export default function PurchaseListPage() {
   const { hasPermission } = useAuth();
@@ -70,7 +72,7 @@ export default function PurchaseListPage() {
         {hasPermission("purchases.create") && (
           <Link
             to="/purchases/nueva"
-            className="rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700"
+            className="btn btn-primary"
           >
             Nueva Compra
           </Link>
@@ -83,12 +85,12 @@ export default function PurchaseListPage() {
           value={search}
           onChange={(e) => applyFilters({ search: e.target.value })}
           placeholder="Buscar por N° de documento o proveedor..."
-          className="w-64 rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+          className="field w-64"
         />
         <select
           value={status}
           onChange={(e) => applyFilters({ status: e.target.value })}
-          className="rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+          className="field"
         >
           <option value="">Todos los estados</option>
           <option value="completed">Completado</option>
@@ -98,19 +100,19 @@ export default function PurchaseListPage() {
           type="date"
           value={dateFrom}
           onChange={(e) => applyFilters({ dateFrom: e.target.value })}
-          className="rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+          className="field"
         />
         <input
           type="date"
           value={dateTo}
           onChange={(e) => applyFilters({ dateTo: e.target.value })}
-          className="rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+          className="field"
         />
       </div>
 
-      <div className="mt-4 overflow-x-auto rounded-xl bg-white shadow-sm">
+      <div className="card mt-4 overflow-x-auto">
         <table className="w-full text-left text-sm">
-          <thead className="border-b border-slate-200 text-slate-500">
+          <thead className="border-b border-slate-200 bg-slate-50 text-xs tracking-wide text-slate-500 uppercase">
             <tr>
               <th className="px-4 py-3 font-medium">Documento</th>
               <th className="px-4 py-3 font-medium">Proveedor</th>
@@ -129,11 +131,7 @@ export default function PurchaseListPage() {
               </tr>
             )}
             {!isLoading && purchases.length === 0 && (
-              <tr>
-                <td colSpan={6} className="px-4 py-6 text-center text-slate-400">
-                  No se encontraron compras.
-                </td>
-              </tr>
+              <EmptyTableRow colSpan={6} icon={ShoppingBag} title="Aún no hay compras" description="Las compras a proveedores que registres aparecerán aquí." filtered={Boolean(search || status || dateFrom || dateTo)} />
             )}
             {!isLoading &&
               purchases.map((purchase) => (
@@ -153,7 +151,7 @@ export default function PurchaseListPage() {
                   <td className="px-4 py-3 font-medium text-slate-900">S/ {purchase.total.toFixed(2)}</td>
                   <td className="px-4 py-3">
                     <span
-                      className={`rounded-full px-2 py-0.5 text-xs font-medium ${
+                      className={`pill ${
                         purchase.status === "annulled"
                           ? "bg-red-100 text-red-700"
                           : "bg-emerald-100 text-emerald-700"
@@ -187,7 +185,7 @@ export default function PurchaseListPage() {
               type="button"
               disabled={meta.current_page <= 1}
               onClick={() => setPage(meta.current_page - 1)}
-              className="rounded-md border border-slate-300 px-3 py-1 disabled:cursor-not-allowed disabled:opacity-40"
+              className="btn-sm btn-secondary"
             >
               Anterior
             </button>
@@ -195,7 +193,7 @@ export default function PurchaseListPage() {
               type="button"
               disabled={meta.current_page >= meta.last_page}
               onClick={() => setPage(meta.current_page + 1)}
-              className="rounded-md border border-slate-300 px-3 py-1 disabled:cursor-not-allowed disabled:opacity-40"
+              className="btn-sm btn-secondary"
             >
               Siguiente
             </button>

@@ -112,7 +112,7 @@ export function ServiceReceptionModal({ onClose, onCreated }: ServiceReceptionMo
         <div>
           <span className="mb-1 block text-sm font-medium text-slate-700">Cliente</span>
           {customer ? (
-            <div className="flex items-center justify-between rounded-md border border-slate-300 px-3 py-2 text-sm">
+            <div className="field flex items-center justify-between">
               <span>
                 {customer.name_or_business_name}{" "}
                 <span className="text-xs text-slate-400">({customer.document_number})</span>
@@ -131,7 +131,7 @@ export function ServiceReceptionModal({ onClose, onCreated }: ServiceReceptionMo
                 <select
                   value={newDocumentType}
                   onChange={(e) => setNewDocumentType(e.target.value)}
-                  className="rounded-md border border-slate-300 px-3 py-2 text-sm"
+                  className="field"
                 >
                   {DOCUMENT_TYPES.map((d) => (
                     <option key={d.value} value={d.value}>
@@ -145,7 +145,7 @@ export function ServiceReceptionModal({ onClose, onCreated }: ServiceReceptionMo
                   onChange={(e) => setNewDocumentNumber(e.target.value)}
                   placeholder="N° de documento"
                   required
-                  className="rounded-md border border-slate-300 px-3 py-2 text-sm"
+                  className="field"
                 />
               </div>
               <input
@@ -154,14 +154,14 @@ export function ServiceReceptionModal({ onClose, onCreated }: ServiceReceptionMo
                 onChange={(e) => setNewName(e.target.value)}
                 placeholder="Nombre completo / Razón social"
                 required
-                className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
+                className="field w-full"
               />
               <input
                 type="text"
                 value={newPhone}
                 onChange={(e) => setNewPhone(e.target.value)}
                 placeholder="Teléfono (opcional)"
-                className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
+                className="field w-full"
               />
               <button
                 type="button"
@@ -179,12 +179,12 @@ export function ServiceReceptionModal({ onClose, onCreated }: ServiceReceptionMo
                   value={customerSearch}
                   onChange={(e) => setCustomerSearch(e.target.value)}
                   placeholder="Buscar por nombre o DNI/RUC..."
-                  className="flex-1 rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                  className="field flex-1"
                 />
                 <button
                   type="button"
                   onClick={() => setCreatingCustomer(true)}
-                  className="rounded-md border border-slate-300 px-3 py-2 text-xs font-medium text-slate-700 hover:bg-slate-50"
+                  className="btn btn-secondary"
                 >
                   + Nuevo
                 </button>
@@ -217,7 +217,7 @@ export function ServiceReceptionModal({ onClose, onCreated }: ServiceReceptionMo
           <select
             value={technicianId}
             onChange={(e) => setTechnicianId(e.target.value)}
-            className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
+            className="field w-full"
           >
             <option value="">Sin asignar</option>
             {technicians.map((t) => (
@@ -234,7 +234,7 @@ export function ServiceReceptionModal({ onClose, onCreated }: ServiceReceptionMo
             <select
               value={deviceType}
               onChange={(e) => setDeviceType(e.target.value as DeviceType)}
-              className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
+              className="field w-full"
             >
               {DEVICE_TYPES.map((d) => (
                 <option key={d.value} value={d.value}>
@@ -249,7 +249,7 @@ export function ServiceReceptionModal({ onClose, onCreated }: ServiceReceptionMo
               type="text"
               value={serialNumber}
               onChange={(e) => setSerialNumber(e.target.value)}
-              className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
+              className="field w-full"
             />
           </div>
         </div>
@@ -261,7 +261,7 @@ export function ServiceReceptionModal({ onClose, onCreated }: ServiceReceptionMo
               type="text"
               value={brand}
               onChange={(e) => setBrand(e.target.value)}
-              className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
+              className="field w-full"
             />
           </div>
           <div>
@@ -270,7 +270,7 @@ export function ServiceReceptionModal({ onClose, onCreated }: ServiceReceptionMo
               type="text"
               value={model}
               onChange={(e) => setModel(e.target.value)}
-              className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
+              className="field w-full"
             />
           </div>
         </div>
@@ -281,7 +281,7 @@ export function ServiceReceptionModal({ onClose, onCreated }: ServiceReceptionMo
             type="text"
             value={devicePassword}
             onChange={(e) => setDevicePassword(e.target.value)}
-            className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
+            className="field w-full"
           />
         </div>
 
@@ -293,7 +293,7 @@ export function ServiceReceptionModal({ onClose, onCreated }: ServiceReceptionMo
             type="text"
             value={accessories}
             onChange={(e) => setAccessories(e.target.value)}
-            className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
+            className="field w-full"
           />
         </div>
 
@@ -304,7 +304,7 @@ export function ServiceReceptionModal({ onClose, onCreated }: ServiceReceptionMo
             onChange={(e) => setReportedIssue(e.target.value)}
             required
             rows={3}
-            className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
+            className="field w-full"
           />
           {errors.reported_issue && <p className="mt-1 text-sm text-red-600">{errors.reported_issue[0]}</p>}
         </div>
@@ -317,7 +317,7 @@ export function ServiceReceptionModal({ onClose, onCreated }: ServiceReceptionMo
             min="0"
             value={estimatedCost}
             onChange={(e) => setEstimatedCost(e.target.value)}
-            className="w-40 rounded-md border border-slate-300 px-3 py-2 text-sm"
+            className="field w-40"
           />
         </div>
 
@@ -325,14 +325,14 @@ export function ServiceReceptionModal({ onClose, onCreated }: ServiceReceptionMo
           <button
             type="button"
             onClick={onClose}
-            className="rounded-md border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50"
+            className="btn btn-secondary"
           >
             Cancelar
           </button>
           <button
             type="submit"
             disabled={isSubmitting}
-            className="rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-60"
+            className="btn btn-primary"
           >
             {isSubmitting ? "Guardando..." : "Registrar recepción"}
           </button>

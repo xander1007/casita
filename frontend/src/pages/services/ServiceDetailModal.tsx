@@ -103,7 +103,7 @@ export function ServiceDetailModal({ service, onClose, onChanged }: ServiceDetai
     <Modal title={`Orden ${current.code}`} onClose={onClose} maxWidth="max-w-2xl">
       <div className="mb-4 flex items-center justify-between">
         <span
-          className={`rounded-full px-2 py-0.5 text-xs font-medium ${
+          className={`pill ${
             current.status === "delivered"
               ? "bg-emerald-100 text-emerald-700"
               : current.status === "cancelled"
@@ -164,7 +164,7 @@ export function ServiceDetailModal({ service, onClose, onChanged }: ServiceDetai
             value={technicianId}
             onChange={(e) => setTechnicianId(e.target.value)}
             disabled={!canManage || isLocked}
-            className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm disabled:bg-slate-100"
+            className="field w-full disabled:bg-slate-100"
           >
             <option value="">Sin asignar</option>
             {technicians.map((t) => (
@@ -182,7 +182,7 @@ export function ServiceDetailModal({ service, onClose, onChanged }: ServiceDetai
             onChange={(e) => setDiagnosis(e.target.value)}
             disabled={!canManage || isLocked}
             rows={3}
-            className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm disabled:bg-slate-100"
+            className="field w-full disabled:bg-slate-100"
           />
         </div>
 
@@ -196,7 +196,7 @@ export function ServiceDetailModal({ service, onClose, onChanged }: ServiceDetai
               value={estimatedCost}
               onChange={(e) => setEstimatedCost(e.target.value)}
               disabled={!canManage || isLocked}
-              className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm disabled:bg-slate-100"
+              className="field w-full disabled:bg-slate-100"
             />
           </div>
           <div>
@@ -208,7 +208,7 @@ export function ServiceDetailModal({ service, onClose, onChanged }: ServiceDetai
               value={finalCost}
               onChange={(e) => setFinalCost(e.target.value)}
               disabled={!canManage || isLocked}
-              className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm disabled:bg-slate-100"
+              className="field w-full disabled:bg-slate-100"
             />
           </div>
         </div>
@@ -218,7 +218,7 @@ export function ServiceDetailModal({ service, onClose, onChanged }: ServiceDetai
             <button
               type="submit"
               disabled={isSaving}
-              className="rounded-md border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-60"
+              className="btn btn-secondary"
             >
               Guardar cambios
             </button>
@@ -236,7 +236,7 @@ export function ServiceDetailModal({ service, onClose, onChanged }: ServiceDetai
             type="button"
             onClick={cancelOrder}
             disabled={isSaving}
-            className="rounded-md border border-red-300 px-4 py-2 text-sm font-medium text-red-600 hover:bg-red-50"
+            className="btn border border-red-300 bg-white text-red-600 hover:bg-red-50"
           >
             Cancelar orden
           </button>
@@ -245,7 +245,7 @@ export function ServiceDetailModal({ service, onClose, onChanged }: ServiceDetai
               type="button"
               onClick={() => save("diagnosing")}
               disabled={isSaving}
-              className="rounded-md bg-amber-600 px-4 py-2 text-sm font-medium text-white hover:bg-amber-700"
+              className="btn bg-amber-600 text-white shadow-sm hover:bg-amber-700"
             >
               Iniciar diagnóstico
             </button>
@@ -255,7 +255,7 @@ export function ServiceDetailModal({ service, onClose, onChanged }: ServiceDetai
               type="button"
               onClick={markRepaired}
               disabled={isSaving}
-              className="rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700"
+              className="btn btn-primary"
             >
               Marcar como reparado
             </button>
@@ -264,7 +264,7 @@ export function ServiceDetailModal({ service, onClose, onChanged }: ServiceDetai
             <button
               type="button"
               onClick={goToCharge}
-              className="rounded-md bg-emerald-600 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-700"
+              className="btn btn-success"
             >
               Enviar a cobro (POS)
             </button>

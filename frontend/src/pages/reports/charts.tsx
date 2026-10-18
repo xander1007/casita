@@ -26,20 +26,23 @@ export function DailySalesChart({ data }: { data: DailySalesPoint[] }) {
   const max = Math.max(...data.map((d) => d.total), 1);
 
   return (
-    <div className="flex h-48 items-end gap-1 border-b border-slate-200 pb-1">
+    <div className="flex h-48 items-stretch gap-1 border-b border-slate-200 pb-1">
       {data.map((point) => {
         const heightPct = Math.max((point.total / max) * 100, point.total > 0 ? 4 : 0);
         const day = new Date(`${point.date}T00:00:00`).getDate();
         return (
-          <div key={point.date} className="group relative flex flex-1 flex-col items-center justify-end">
-            <div className="pointer-events-none absolute -top-7 hidden whitespace-nowrap rounded bg-slate-800 px-2 py-1 text-xs text-white group-hover:block">
+          <div key={point.date} className="group relative flex h-full flex-1 flex-col items-center">
+            <div className="pointer-events-none absolute -top-7 z-10 hidden whitespace-nowrap rounded bg-ink-800 px-2 py-1 text-xs text-white group-hover:block">
               {formatCurrency(point.total)}
             </div>
-            <div
-              className="w-full min-w-[3px] rounded-t bg-indigo-500 transition-colors group-hover:bg-indigo-600"
-              style={{ height: `${heightPct}%` }}
-              title={`${point.date}: ${formatCurrency(point.total)}`}
-            />
+            {/* The bar's percentage height needs a parent with a definite height. */}
+            <div className="flex w-full flex-1 items-end">
+              <div
+                className="w-full min-w-[3px] rounded-t bg-indigo-500 transition-colors group-hover:bg-indigo-600"
+                style={{ height: `${heightPct}%` }}
+                title={`${point.date}: ${formatCurrency(point.total)}`}
+              />
+            </div>
             <span className="mt-1 text-[10px] text-slate-400">{day}</span>
           </div>
         );

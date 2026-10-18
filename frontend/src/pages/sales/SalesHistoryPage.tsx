@@ -4,6 +4,8 @@ import { DOCUMENT_TYPE_LABELS, DOCUMENT_TYPES } from "../../types/sales";
 import type { Sale } from "../../types/sales";
 import type { PaginationMeta } from "../../types/common";
 import { SaleDetailModal } from "./SaleDetailModal";
+import { EmptyTableRow } from "../../components/ui/EmptyState";
+import { Receipt } from "lucide-react";
 
 export default function SalesHistoryPage() {
   const [sales, setSales] = useState<Sale[]>([]);
@@ -71,12 +73,12 @@ export default function SalesHistoryPage() {
           value={search}
           onChange={(e) => applyFilters({ search: e.target.value })}
           placeholder="Buscar por correlativo o cliente..."
-          className="w-64 rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+          className="field w-64"
         />
         <select
           value={documentType}
           onChange={(e) => applyFilters({ documentType: e.target.value })}
-          className="rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+          className="field"
         >
           <option value="">Todos los comprobantes</option>
           {DOCUMENT_TYPES.map((d) => (
@@ -88,7 +90,7 @@ export default function SalesHistoryPage() {
         <select
           value={status}
           onChange={(e) => applyFilters({ status: e.target.value })}
-          className="rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+          className="field"
         >
           <option value="">Todos los estados</option>
           <option value="completed">Completado</option>
@@ -98,19 +100,19 @@ export default function SalesHistoryPage() {
           type="date"
           value={dateFrom}
           onChange={(e) => applyFilters({ dateFrom: e.target.value })}
-          className="rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+          className="field"
         />
         <input
           type="date"
           value={dateTo}
           onChange={(e) => applyFilters({ dateTo: e.target.value })}
-          className="rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+          className="field"
         />
       </div>
 
-      <div className="mt-4 overflow-x-auto rounded-xl bg-white shadow-sm">
+      <div className="card mt-4 overflow-x-auto">
         <table className="w-full text-left text-sm">
-          <thead className="border-b border-slate-200 text-slate-500">
+          <thead className="border-b border-slate-200 bg-slate-50 text-xs tracking-wide text-slate-500 uppercase">
             <tr>
               <th className="px-4 py-3 font-medium">Comprobante</th>
               <th className="px-4 py-3 font-medium">Cliente</th>
@@ -129,11 +131,7 @@ export default function SalesHistoryPage() {
               </tr>
             )}
             {!isLoading && sales.length === 0 && (
-              <tr>
-                <td colSpan={6} className="px-4 py-6 text-center text-slate-400">
-                  No se encontraron ventas.
-                </td>
-              </tr>
+              <EmptyTableRow colSpan={6} icon={Receipt} title="Aún no hay ventas" description="Los comprobantes emitidos desde el Punto de Venta aparecerán aquí." filtered={Boolean(search || documentType || status || dateFrom || dateTo)} />
             )}
             {!isLoading &&
               sales.map((sale) => (
@@ -151,7 +149,7 @@ export default function SalesHistoryPage() {
                   <td className="px-4 py-3 font-medium text-slate-900">S/ {sale.total.toFixed(2)}</td>
                   <td className="px-4 py-3">
                     <span
-                      className={`rounded-full px-2 py-0.5 text-xs font-medium ${
+                      className={`pill ${
                         sale.status === "annulled"
                           ? "bg-red-100 text-red-700"
                           : "bg-emerald-100 text-emerald-700"
@@ -185,7 +183,7 @@ export default function SalesHistoryPage() {
               type="button"
               disabled={meta.current_page <= 1}
               onClick={() => setPage(meta.current_page - 1)}
-              className="rounded-md border border-slate-300 px-3 py-1 disabled:cursor-not-allowed disabled:opacity-40"
+              className="btn-sm btn-secondary"
             >
               Anterior
             </button>
@@ -193,7 +191,7 @@ export default function SalesHistoryPage() {
               type="button"
               disabled={meta.current_page >= meta.last_page}
               onClick={() => setPage(meta.current_page + 1)}
-              className="rounded-md border border-slate-300 px-3 py-1 disabled:cursor-not-allowed disabled:opacity-40"
+              className="btn-sm btn-secondary"
             >
               Siguiente
             </button>
